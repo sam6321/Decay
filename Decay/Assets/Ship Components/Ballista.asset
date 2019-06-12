@@ -13,5 +13,8 @@ MonoBehaviour:
   m_Name: Ballista
   m_EditorClassIdentifier: 
   componentName: Ballista
-  waterSprites:
-  - {fileID: 21300000, guid: 53f09d52ac9e0a44bb1d12848183b8ae, type: 3}
+  floatingPrefabs:
+  - {fileID: 7253471108629421557, guid: 37427f93b573ff74c9354b36e808414b, type: 3}
+  maxSpawned: 2
+  spawnRate: 30
+  onShipPrefab: {fileID: 0}

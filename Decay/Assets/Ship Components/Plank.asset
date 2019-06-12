@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: Plank
   m_EditorClassIdentifier: 
   componentName: Plank
-  waterSprites:
-  - {fileID: 21300000, guid: 6ab687f2463c45d42968850adc681e4b, type: 3}
-  - {fileID: 21300000, guid: 52cb939b209479e4eaefdec9bafacf73, type: 3}
-  - {fileID: 21300000, guid: 881ed829fa8032e48b2b73c8c3294f72, type: 3}
-  - {fileID: 21300000, guid: 2297f6a21d5f1794c9bfb4739dde8087, type: 3}
-  - {fileID: 21300000, guid: 8b55907b8b189234984cda6d33cd58b7, type: 3}
-  - {fileID: 21300000, guid: 478966085e91792438e0274345d29c7c, type: 3}
+  floatingPrefabs:
+  - {fileID: 4891525333013181503, guid: 8e902d017f14c6245a379d5823f635a5, type: 3}
+  - {fileID: 6949554417968874291, guid: 3ca38f67a4990a84cb147a247a44fe21, type: 3}
+  - {fileID: 8817073878778386594, guid: df0695e5da162a7498f7a3c887e0e20d, type: 3}
+  - {fileID: 6228641531533140756, guid: 499ee6110c408b146af74d830e09e8ba, type: 3}
+  - {fileID: 4982706896195656358, guid: 4e5d0440bf588a346ab6659973c8886c, type: 3}
+  - {fileID: 3512721952250695027, guid: a673d15b5c2a3ea4390888bf572e56ab, type: 3}
+  maxSpawned: 10
+  spawnRate: 1
+  onShipPrefab: {fileID: 0}

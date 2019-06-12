@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Oar
   m_EditorClassIdentifier: 
   componentName: Oar
-  waterSprites:
-  - {fileID: 21300000, guid: 7b0dead378d021f4080bfa415b883b5a, type: 3}
-  - {fileID: 21300000, guid: b6cf035fd7062474da45488f2e652dda, type: 3}
+  floatingPrefabs:
+  - {fileID: 2565366069520247275, guid: 48d69c1d9d39edb43ad58545d195f03a, type: 3}
+  maxSpawned: 5
+  spawnRate: 10
+  onShipPrefab: {fileID: 0}

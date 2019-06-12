@@ -13,5 +13,8 @@ MonoBehaviour:
   m_Name: Cannon
   m_EditorClassIdentifier: 
   componentName: Cannon
-  waterSprites:
-  - {fileID: 21300000, guid: 6f70eca0a01ddec4f9fe7a01172ed057, type: 3}
+  floatingPrefabs:
+  - {fileID: 6436027721658458298, guid: 78dd3220a5183e64cb7467d4934e1a02, type: 3}
+  maxSpawned: 2
+  spawnRate: 30
+  onShipPrefab: {fileID: 0}
