@@ -5,9 +5,7 @@ public class ShipComponent : ScriptableObject
 {
     public string componentName;
 
-    public GameObject[] floatingPrefabs;
+    public GameObject[] prefabs;
     public uint maxSpawned;
     public float spawnRate;
-
-    public GameObject onShipPrefab;
 }

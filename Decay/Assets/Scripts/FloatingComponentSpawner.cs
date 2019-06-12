@@ -7,7 +7,7 @@ public class FloatingComponentSpawner : MonoBehaviour
 {
     class SpawnInfo
     {
-        public List<GameObject> spawned = new List<GameObject>();
+        public List<FloatingComponent> spawned = new List<FloatingComponent>();
         public float nextSpawn = 0;
     }
 
@@ -33,27 +33,38 @@ public class FloatingComponentSpawner : MonoBehaviour
 
             if(Time.time >= spawnInfo.nextSpawn && spawnInfo.spawned.Count < component.maxSpawned)
             {
-                GameObject prefab = RandomExtensions.RandomElement(component.floatingPrefabs);
-                GameObject instance = Instantiate(prefab);
+                GameObject prefab = RandomExtensions.RandomElement(component.prefabs);
+                // TODO: Set position properly so it doesn't spawn inside the camera's view
+                GameObject instance = Instantiate(prefab, UnityEngine.Random.insideUnitCircle * 20, Quaternion.identity);
 
-                // TODO: Set position properly
-                instance.transform.position = UnityEngine.Random.insideUnitCircle * 20;
-                // Mark it with a destroy event listener so we can clear it from our internal lists on destroy
-                instance.GetComponent<FloatingComponent>().OnComponentPickup.AddListener(OnSpawnedComponentDestroyed);
+                // Add as spawned by this spawner
+                Add(instance.GetComponent<FloatingComponent>());
 
-                spawnInfo.spawned.Add(instance);
                 spawnInfo.nextSpawn = Time.time + component.spawnRate;
             }
         }
     }
 
-    void OnSpawnedComponentDestroyed(FloatingComponent component)
+    public void Add(FloatingComponent component)
     {
-        int componentIndex = Array.IndexOf(components, component.ShipComponent);
-        Debug.Assert(componentIndex >= 0, "Destroyed FloatingComponent has bad ShipComponent");
-        SpawnInfo info = spawnInfos[componentIndex];
-        info.spawned.Remove(component.gameObject);
+        component.Spawner = this;
+        SpawnInfo info = GetSpawnInfo(component.ShipComponent);
+        if(!info.spawned.Contains(component))
+        {
+            // Add if this spawner doesn't already own the component
+            info.spawned.Add(component);
+        }
+    }
 
-        Debug.Log("Post-Destroy count for " + component.ShipComponent.componentName + ": " + info.spawned.Count);
+    public void Remove(FloatingComponent component)
+    {
+        component.Spawner = null;
+        SpawnInfo info = GetSpawnInfo(component.ShipComponent);
+        info.spawned.Remove(component); // Remove if added
+    }
+
+    private SpawnInfo GetSpawnInfo(ShipComponent shipComponent)
+    {
+        return spawnInfos[Array.IndexOf(components, shipComponent)];
     }
 }

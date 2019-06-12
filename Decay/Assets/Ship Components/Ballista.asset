@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Ballista
   m_EditorClassIdentifier: 
   componentName: Ballista
-  floatingPrefabs:
+  prefabs:
   - {fileID: 7253471108629421557, guid: 37427f93b573ff74c9354b36e808414b, type: 3}
   maxSpawned: 2
   spawnRate: 30
-  onShipPrefab: {fileID: 0}

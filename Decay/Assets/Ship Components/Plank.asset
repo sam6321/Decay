@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Plank
   m_EditorClassIdentifier: 
   componentName: Plank
-  floatingPrefabs:
+  prefabs:
   - {fileID: 4891525333013181503, guid: 8e902d017f14c6245a379d5823f635a5, type: 3}
   - {fileID: 6949554417968874291, guid: 3ca38f67a4990a84cb147a247a44fe21, type: 3}
   - {fileID: 8817073878778386594, guid: df0695e5da162a7498f7a3c887e0e20d, type: 3}
@@ -22,4 +22,3 @@ MonoBehaviour:
   - {fileID: 3512721952250695027, guid: a673d15b5c2a3ea4390888bf572e56ab, type: 3}
   maxSpawned: 10
   spawnRate: 1
-  onShipPrefab: {fileID: 0}

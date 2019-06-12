@@ -1,13 +1,8 @@
 ﻿using UnityEngine;
-using UnityEngine.Events;
 using cakeslice;
 
-[RequireComponent(typeof(Outline), typeof(SpriteRenderer), typeof(Collider2D))]
 public class FloatingComponent : MonoBehaviour
 {
-    [System.Serializable]
-    public class OnComponentPickupEvent : UnityEvent<FloatingComponent> { };
-
     [SerializeField]
     private ShipComponent component;
     public ShipComponent ShipComponent => component;
@@ -16,26 +11,47 @@ public class FloatingComponent : MonoBehaviour
     private float pickupDistance = 50.0f;
 
     [SerializeField]
-    private OnComponentPickupEvent onComponentPickup = new OnComponentPickupEvent();
-    public OnComponentPickupEvent OnComponentPickup => onComponentPickup;
+    private float timeScale = 1.0f;
+
+    public FloatingComponentSpawner Spawner { get; set; }
 
     private GameObject player;
     private SpriteRenderer spriteRenderer;
     private Outline outline;
     private Collider2D collider2d;
+    private PositionFollow positionFollow;
     private bool mouseOver = false;
+
+    private float offset;
+    private Vector2 basePosition;
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         collider2d = GetComponent<Collider2D>();
         outline = GetComponent<Outline>();
+        positionFollow = GetComponent<PositionFollow>();
         outline.eraseRenderer = true;
+
+        offset = Random.Range(0, 100);
+        basePosition = transform.position;
+    }
+
+    private void Update()
+    {
+        float t = (Time.time + offset) * timeScale;
+        Vector2 vectorOffset = new Vector2(
+            Mathf.Sin(t) + Mathf.Cos(t / 2),
+            Mathf.Cos(t * 2) - Mathf.Sin(t)
+        );
+
+        transform.eulerAngles = new Vector3(0, 0, Mathf.Rad2Deg * (Mathf.Sin(t / 2) * Mathf.Cos(t * 2)));
+        transform.position = basePosition + vectorOffset;
     }
 
     private void OnMouseOver()
     {
-        if(outline.eraseRenderer && Vector2.Distance(collider2d.ClosestPoint(player.transform.position), player.transform.position) < pickupDistance)
+        if(enabled && outline.eraseRenderer && Vector2.Distance(collider2d.ClosestPoint(player.transform.position), player.transform.position) < pickupDistance)
         {
             outline.eraseRenderer = false;
             mouseOver = true;
@@ -44,17 +60,28 @@ public class FloatingComponent : MonoBehaviour
 
     private void OnMouseDown()
     {
-        // TODO: Add to boat somehow
-        if(mouseOver)
+        if(mouseOver && enabled)
         {
-            onComponentPickup.Invoke(this);
-            Destroy(gameObject);
+            // Release from the spawner, as this is now owned by the player
+            Spawner.Remove(this);
+
+            // Disable the FloatingComponent and send this component over to the player
+            enabled = false;
+            outline.eraseRenderer = true;
+            mouseOver = false;
+
+            // TODO: Send it properly, rather than doing this for fun
+            player.GetComponent<ChainFollowParent>().Add(positionFollow);
+            positionFollow.enabled = true;
         }
     }
 
     private void OnMouseExit()
     {
-        outline.eraseRenderer = true;
-        mouseOver = false;
+        if (enabled)
+        {
+            outline.eraseRenderer = true;
+            mouseOver = false;
+        }
     }
 }

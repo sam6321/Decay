@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Oar
   m_EditorClassIdentifier: 
   componentName: Oar
-  floatingPrefabs:
+  prefabs:
   - {fileID: 2565366069520247275, guid: 48d69c1d9d39edb43ad58545d195f03a, type: 3}
   maxSpawned: 5
   spawnRate: 10
-  onShipPrefab: {fileID: 0}

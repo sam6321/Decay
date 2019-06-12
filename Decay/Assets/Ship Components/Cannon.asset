@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Cannon
   m_EditorClassIdentifier: 
   componentName: Cannon
-  floatingPrefabs:
+  prefabs:
   - {fileID: 6436027721658458298, guid: 78dd3220a5183e64cb7467d4934e1a02, type: 3}
   maxSpawned: 2
   spawnRate: 30
-  onShipPrefab: {fileID: 0}
