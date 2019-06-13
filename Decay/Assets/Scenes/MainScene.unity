@@ -170,7 +170,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 0
   m_RenderingPath: 1
-  m_TargetTexture: {fileID: 1342893126}
+  m_TargetTexture: {fileID: 978856716}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -237,12 +237,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a306cfc3482623e4a83e3b41fde54637, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  components:
-  - {fileID: 11400000, guid: 566d636f0c93f964e86e5859a8da1d97, type: 2}
-  - {fileID: 11400000, guid: 4c69e5e4148c92b47aa41272c029046d, type: 2}
-  - {fileID: 11400000, guid: d969409ec01b42741b413443e0452425, type: 2}
-  - {fileID: 11400000, guid: 53027991164b6a04ab23f97fc941dbb4, type: 2}
-  - {fileID: 11400000, guid: 644476342eb965f46bdebdb23c2fbd5d, type: 2}
+  spawnInfos:
+  - maxSpawned: 10
+    prefabs:
+    - {fileID: 5983945218485328235, guid: 3b762b396e5c0c040829ef97c8712f3b, type: 3}
+    - {fileID: 6630872142019274210, guid: 0e377a77089d97346b64dd04dceb61bc, type: 3}
+    - {fileID: 3540122942420690160, guid: e51836bbbdc1fc743a6f6add310d9df7, type: 3}
+    - {fileID: 8157690569268977155, guid: 317420aa43100bc45b4e89985db6764e, type: 3}
+    - {fileID: 2068663120638302046, guid: 5eb5251191c37aa4aba03da740ddd216, type: 3}
+    - {fileID: 1297229886114587701, guid: 031985eed2af4c54e9afa7668201fb8a, type: 3}
+    spawnRate: 2
+    spawned: []
+    nextSpawn: 0
+  - maxSpawned: 3
+    prefabs:
+    - {fileID: 2422054958220054651, guid: f0e4ee3bec8de784dac1676cc4e494c2, type: 3}
+    spawnRate: 20
+    spawned: []
+    nextSpawn: 0
+  - maxSpawned: 5
+    prefabs:
+    - {fileID: 2565366069520247275, guid: 48d69c1d9d39edb43ad58545d195f03a, type: 3}
+    spawnRate: 10
+    spawned: []
+    nextSpawn: 0
+  - maxSpawned: 1
+    prefabs:
+    - {fileID: 7253471108629421557, guid: 37427f93b573ff74c9354b36e808414b, type: 3}
+    spawnRate: 30
+    spawned: []
+    nextSpawn: 0
+  - maxSpawned: 1
+    prefabs:
+    - {fileID: 6436027721658458298, guid: 78dd3220a5183e64cb7467d4934e1a02, type: 3}
+    spawnRate: 30
+    spawned: []
+    nextSpawn: 0
 --- !u!1 &480883760
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,15 +370,14 @@ Light:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingLayerMask: 0
+  m_RenderingLayerMask: 973078527
   m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0.0000000018775381, y: 0.0000000037252903, z: -Infinity,
-    w: 6.6174445e-24}
+  m_BoundingSphereOverride: {x: 2.4565924e+14, y: 4.6164386e+24, z: 228788, w: 4.3712434e+24}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -366,40 +395,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!84 &731979284
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  serializedVersion: 3
-  m_Width: 991
-  m_Height: 638
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 8
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &874974484
 GameObject:
   m_ObjectHideFlags: 0
@@ -624,9 +619,43 @@ MonoBehaviour:
   sourceCamera: {fileID: 963194227}
   outlineCamera: {fileID: 319078400}
   outlineShaderMaterial: {fileID: 0}
-  renderTexture: {fileID: 1342893126}
-  extraRenderTexture: {fileID: 731979284}
---- !u!84 &1342893126
+  renderTexture: {fileID: 978856716}
+  extraRenderTexture: {fileID: 1587171924}
+--- !u!84 &978856716
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  serializedVersion: 3
+  m_Width: 991
+  m_Height: 638
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 8
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+--- !u!84 &1587171924
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -673,8 +702,7 @@ GameObject:
   - component: {fileID: 1677316433}
   - component: {fileID: 1677316436}
   - component: {fileID: 1677316432}
-  - component: {fileID: 1677316437}
-  - component: {fileID: 1677316438}
+  - component: {fileID: 1677316439}
   m_Layer: 0
   m_Name: TestBoat
   m_TagString: Player
@@ -777,19 +805,7 @@ MonoBehaviour:
   maxRotationDiffMagnitude: 10
   movementForce: 200
   rotationTorqueMultiplier: 50
---- !u!114 &1677316437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1677316431}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f20d71b071735be948fad81d2d3e92cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1677316438
+--- !u!114 &1677316439
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -798,6 +814,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1677316431}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d082cf7c40acec4bb5805982e8eab05, type: 3}
+  m_Script: {fileID: 11500000, guid: 08b3d4d3b4b6c4d47bc9cbe6352259ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  plankDimensions: {x: 0.6, y: 3.1875}

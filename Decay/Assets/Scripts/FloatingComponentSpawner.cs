@@ -5,66 +5,61 @@ using Common;
 
 public class FloatingComponentSpawner : MonoBehaviour
 {
-    class SpawnInfo
+    public class SpawnTag
     {
+        public FloatingComponentSpawner spawner;
+        public SpawnInfo spawnInfo;
+    }
+
+    [Serializable]
+    public class SpawnInfo
+    {
+        public uint maxSpawned = 0;
+        public GameObject[] prefabs;
+        public float spawnRate;
+
+        [HideInInspector]
         public List<FloatingComponent> spawned = new List<FloatingComponent>();
+        [HideInInspector]
         public float nextSpawn = 0;
     }
 
     [SerializeField]
-    private ShipComponent[] components;
     private SpawnInfo[] spawnInfos;
-
-    void Start()
-    {
-        spawnInfos = new SpawnInfo[components.Length];
-        for(int i = 0; i < spawnInfos.Length; i++)
-        {
-            spawnInfos[i] = new SpawnInfo();
-        }
-    }
 
     void Update()
     {
-        for(int i = 0; i < components.Length; i++)
+        foreach(SpawnInfo spawnInfo in spawnInfos)
         {
-            ShipComponent component = components[i];
-            SpawnInfo spawnInfo = spawnInfos[i];
-
-            if(Time.time >= spawnInfo.nextSpawn && spawnInfo.spawned.Count < component.maxSpawned)
+            if (Time.time >= spawnInfo.nextSpawn && spawnInfo.spawned.Count < spawnInfo.maxSpawned)
             {
-                GameObject prefab = RandomExtensions.RandomElement(component.prefabs);
+                GameObject prefab = RandomExtensions.RandomElement(spawnInfo.prefabs);
                 // TODO: Set position properly so it doesn't spawn inside the camera's view
                 GameObject instance = Instantiate(prefab, UnityEngine.Random.insideUnitCircle * 20, Quaternion.identity);
+                FloatingComponent component = instance.GetComponent<FloatingComponent>();
+                component.SpawnTag = new SpawnTag() { spawnInfo = spawnInfo};
 
                 // Add as spawned by this spawner
-                Add(instance.GetComponent<FloatingComponent>());
+                Add(component);
 
-                spawnInfo.nextSpawn = Time.time + component.spawnRate;
+                spawnInfo.nextSpawn = Time.time + spawnInfo.spawnRate;
             }
         }
     }
 
     public void Add(FloatingComponent component)
     {
-        component.Spawner = this;
-        SpawnInfo info = GetSpawnInfo(component.ShipComponent);
-        if(!info.spawned.Contains(component))
+        component.SpawnTag.spawner = this;
+        if(!component.SpawnTag.spawnInfo.spawned.Contains(component))
         {
             // Add if this spawner doesn't already own the component
-            info.spawned.Add(component);
+            component.SpawnTag.spawnInfo.spawned.Add(component);
         }
     }
 
     public void Remove(FloatingComponent component)
     {
-        component.Spawner = null;
-        SpawnInfo info = GetSpawnInfo(component.ShipComponent);
-        info.spawned.Remove(component); // Remove if added
-    }
-
-    private SpawnInfo GetSpawnInfo(ShipComponent shipComponent)
-    {
-        return spawnInfos[Array.IndexOf(components, shipComponent)];
+        component.SpawnTag.spawner = null;
+        component.SpawnTag.spawnInfo.spawned.Remove(component); // Remove if added
     }
 }

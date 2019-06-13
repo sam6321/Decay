@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plank : MonoBehaviour
+public class Plank : ShipComponent
 {
     // Start is called before the first frame update
     void Start()
@@ -14,5 +14,15 @@ public class Plank : MonoBehaviour
     void Update()
     {
         
+    }
+
+    protected override bool DoAttach(ShipStructure structure)
+    {
+        return structure.AddPlank(this);
+    }
+
+    protected override bool DoDetach(ShipStructure structure)
+    {
+        return structure.RemovePlank(this);
     }
 }
