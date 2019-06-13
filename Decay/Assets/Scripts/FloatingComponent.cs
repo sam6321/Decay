@@ -21,6 +21,12 @@ public class FloatingComponent : MonoBehaviour
     private float offset;
     private Vector2 basePosition;
 
+    private SpriteMask mask;
+    private const float maskDeltaMagnitude = 0.0001f;
+    private const float maskMax = 0.8f;
+    private const float maskMin = 0.6f;
+    private float maskDelta = maskDeltaMagnitude;
+
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
@@ -31,6 +37,11 @@ public class FloatingComponent : MonoBehaviour
 
         offset = Random.Range(0, 100);
         basePosition = transform.position;
+        mask = GetComponent<SpriteMask>();
+        if(mask)
+        {
+            mask.alphaCutoff = UnityEngine.Random.Range(maskMin, maskMax);
+        }
     }
 
     private void Update()
@@ -43,6 +54,19 @@ public class FloatingComponent : MonoBehaviour
 
         transform.eulerAngles = new Vector3(0, 0, Mathf.Rad2Deg * (Mathf.Sin(t / 2) * Mathf.Cos(t * 2)));
         transform.position = basePosition + vectorOffset;
+
+        if(mask)
+        {
+            mask.alphaCutoff += maskDelta;
+            if(mask.alphaCutoff > maskMax)
+            {
+                maskDelta = -maskDeltaMagnitude;
+            }
+            else if(mask.alphaCutoff < maskMin)
+            {
+                maskDelta = maskDeltaMagnitude;
+            }
+        }
     }
 
     private void OnMouseOver()
