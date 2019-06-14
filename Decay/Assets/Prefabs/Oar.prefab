@@ -36,7 +36,33 @@ PrefabInstance:
     - target: {fileID: 4655113696639001917, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: m_Name
-      value: FloatingOar
+      value: Oar
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001917, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_TagString
+      value: Oar
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 7b0dead378d021f4080bfa415b883b5a,
+        type: 3}
+    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 3.0898438
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 0.390625
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4655113696639001918, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
@@ -93,33 +119,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 7b0dead378d021f4080bfa415b883b5a,
-        type: 3}
-    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
-        type: 3}
-      propertyPath: m_Size.x
-      value: 3.0898438
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
-        type: 3}
-      propertyPath: m_Size.y
-      value: 0.390625
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
-        type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4655113696639001916, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: component
       value: 
-      objectReference: {fileID: 11400000, guid: 53027991164b6a04ab23f97fc941dbb4,
-        type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 4655113696639001912, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: m_Points.m_Paths.Array.data[0].Array.size

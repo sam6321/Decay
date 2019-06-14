@@ -50,6 +50,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlankBase
       objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001917, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_TagString
+      value: Plank
+      objectReference: {fileID: 0}
     - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: m_Sprite

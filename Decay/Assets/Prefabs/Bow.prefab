@@ -64,6 +64,18 @@ PolygonCollider2D:
       - {x: 1.0742188, y: -0.8671875}
       - {x: 1.0742188, y: -0.3984375}
       - {x: 1.0703125, y: -0.37109375}
+--- !u!114 &2707928419223381824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2422054958220054651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fdccb5836eec924495fe0c1591b65bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6991441603660821830
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -74,7 +86,33 @@ PrefabInstance:
     - target: {fileID: 4655113696639001917, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: m_Name
-      value: FloatingBow
+      value: Bow
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001917, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_TagString
+      value: Bow
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 7e951000dcc2651409687e981ea60b36,
+        type: 3}
+    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 2.1484375
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 1.734375
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4655113696639001918, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
@@ -131,33 +169,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 7e951000dcc2651409687e981ea60b36,
-        type: 3}
-    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
-        type: 3}
-      propertyPath: m_Size.x
-      value: 2.1484375
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
-        type: 3}
-      propertyPath: m_Size.y
-      value: 1.734375
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
-        type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4655113696639001916, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: component
       value: 
-      objectReference: {fileID: 11400000, guid: 4c69e5e4148c92b47aa41272c029046d,
-        type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 4655113696639001912, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: m_Points.m_Paths.Array.data[0].Array.size

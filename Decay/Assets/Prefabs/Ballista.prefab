@@ -1,31 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!61 &4240273097566684055
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7253471108629421557}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.9442668}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.8789062, y: 2.5351562}
-    newSize: {x: 2.8789062, y: 2.5351562}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 2.8789062, y: 0.64662266}
-  m_EdgeRadius: 0
 --- !u!61 &1236217960053873663
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -52,6 +26,32 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.5956385, y: 2.5351562}
   m_EdgeRadius: 0
+--- !u!61 &4240273097566684055
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7253471108629421557}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.9442668}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.8789062, y: 2.5351562}
+    newSize: {x: 2.8789062, y: 2.5351562}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 2.8789062, y: 0.64662266}
+  m_EdgeRadius: 0
 --- !u!1001 &2608649287673018568
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -62,7 +62,33 @@ PrefabInstance:
     - target: {fileID: 4655113696639001917, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: m_Name
-      value: FloatingBallista
+      value: Ballista
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001917, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_TagString
+      value: Weapon
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 53f09d52ac9e0a44bb1d12848183b8ae,
+        type: 3}
+    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 2.8789062
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 2.5351562
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4655113696639001918, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
@@ -119,33 +145,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 53f09d52ac9e0a44bb1d12848183b8ae,
-        type: 3}
-    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
-        type: 3}
-      propertyPath: m_Size.x
-      value: 2.8789062
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
-        type: 3}
-      propertyPath: m_Size.y
-      value: 2.5351562
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
-        type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4655113696639001916, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: component
       value: 
-      objectReference: {fileID: 11400000, guid: 566d636f0c93f964e86e5859a8da1d97,
-        type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 4655113696639001912, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: m_Points.m_Paths.Array.size

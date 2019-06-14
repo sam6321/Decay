@@ -1,22 +1,20 @@
 ﻿using UnityEngine;
-using Common;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField]
+    private float forwardMovementForce = 100f;
 
     [SerializeField]
-    private float maxRotationDiffMagnitude = 20.0f;
-
-    [SerializeField]
-    private float movementForce = 100.0f;
+    private float horizontalForwardMovementForce = 50f;
 
     [SerializeField]
     private float rotationTorqueMultiplier = 50.0f;
 
     private Rigidbody2D rigidbody2D;
 
-    private Vector2 movement;
+    private Vector2 movement = new Vector2();
 
     void Start()
     {
@@ -25,20 +23,25 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        movement.Set(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
     }
-
+    
     void FixedUpdate()
     {
-        Vector2 direction = movement.normalized;
-        if (direction.magnitude > 0)
-        {
-            float angle = Vector2.SignedAngle(Vector2.up, direction);
-            float diff = Mathf.DeltaAngle(transform.eulerAngles.z, angle);
-            diff = MathExtensions.ClampMagnitude(diff, 0.0f, maxRotationDiffMagnitude);
 
-            rigidbody2D.AddForce(transform.up * movementForce * Time.fixedDeltaTime);
-            rigidbody2D.AddTorque(diff * rotationTorqueMultiplier * Time.fixedDeltaTime);
+        if(movement.y != 0)
+        {
+            float force = movement.y < 0 ? movement.y * 0.2f : movement.y;
+            rigidbody2D.AddForce(transform.up * forwardMovementForce * force * Time.fixedDeltaTime);
+        }
+        else if(movement.x != 0)
+        {
+            rigidbody2D.AddForce(transform.up * horizontalForwardMovementForce * Mathf.Abs(movement.x) * Time.fixedDeltaTime);
+        }
+        
+        if(movement.x != 0)
+        {
+            rigidbody2D.AddTorque(-movement.x * rotationTorqueMultiplier * Time.fixedDeltaTime);
         }
     }
 }
