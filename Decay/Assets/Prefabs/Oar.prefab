@@ -124,6 +124,11 @@ PrefabInstance:
       propertyPath: component
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001916, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: npcPriority
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4655113696639001912, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: m_Points.m_Paths.Array.data[0].Array.size

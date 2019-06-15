@@ -169,6 +169,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stern
       objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001917, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_TagString
+      value: Stern
+      objectReference: {fileID: 0}
     - target: {fileID: -2757914058833903268, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: m_MaskAlphaCutoff
@@ -274,6 +279,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001916, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: npcPriority
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 92c269ec14f49c74c9ae8a2757561382, type: 3}

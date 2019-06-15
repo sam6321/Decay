@@ -5,13 +5,18 @@ public class FloatingComponent : MonoBehaviour
 {
     [SerializeField]
     private float pickupDistance = 50.0f;
+    public float PickupDistance => pickupDistance;
 
     [SerializeField]
     private float timeScale = 1.0f;
 
+    [SerializeField]
+    private int npcPriority = 0; // NPCs prefer to go after higher priority items
+    public int NPCPriority => npcPriority;
+
     public FloatingComponentSpawner.SpawnTag SpawnTag { get; set; }
 
-    private GameObject player;
+    private ShipStructure player;
     private Outline outline;
     private Collider2D collider2d;
     private PositionFollow positionFollow;
@@ -29,7 +34,7 @@ public class FloatingComponent : MonoBehaviour
 
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<ShipStructure>();
         collider2d = GetComponent<Collider2D>();
         outline = GetComponent<Outline>();
         positionFollow = GetComponent<PositionFollow>();
@@ -72,7 +77,7 @@ public class FloatingComponent : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if(enabled && outline.eraseRenderer && Vector2.Distance(collider2d.ClosestPoint(player.transform.position), player.transform.position) < pickupDistance)
+        if(enabled && outline.eraseRenderer && CanPickup(player))
         {
             outline.eraseRenderer = false;
             mouseOver = true;
@@ -83,7 +88,7 @@ public class FloatingComponent : MonoBehaviour
     {
         if(mouseOver && enabled)
         {
-            TryAttachToShip(player.GetComponent<ShipStructure>());
+            TryAttachToShip(player);
         }
     }
 
@@ -94,6 +99,19 @@ public class FloatingComponent : MonoBehaviour
             outline.eraseRenderer = true;
             mouseOver = false;
         }
+    }
+
+    public bool CanPickup(ShipStructure structure)
+    {
+        return DistanceTo(structure) < pickupDistance;
+    }
+
+    public float DistanceTo(ShipStructure structure)
+    {
+        Vector2 closestShipPoint = structure.ClosestPoint(transform.position);
+        Vector2 closestComponentPoint = collider2d.ClosestPoint(closestShipPoint);
+        Debug.DrawLine(closestShipPoint, closestComponentPoint, Color.red, 1);
+        return Vector2.Distance(closestShipPoint, closestComponentPoint);
     }
 
     public bool TryAttachToShip(ShipStructure structure)
@@ -116,6 +134,8 @@ public class FloatingComponent : MonoBehaviour
             outline.eraseRenderer = true;
             mouseOver = false;
             mask.alphaCutoff = 0;
+
+            return true;
         }
 
         return false;

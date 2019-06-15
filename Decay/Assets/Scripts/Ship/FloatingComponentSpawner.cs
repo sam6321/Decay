@@ -35,7 +35,7 @@ public class FloatingComponentSpawner : MonoBehaviour
             {
                 GameObject prefab = RandomExtensions.RandomElement(spawnInfo.prefabs);
                 // TODO: Set position properly so it doesn't spawn inside the camera's view
-                GameObject instance = Instantiate(prefab, UnityEngine.Random.insideUnitCircle * 20, Quaternion.identity);
+                GameObject instance = Instantiate(prefab, UnityEngine.Random.insideUnitCircle * 40, Quaternion.identity);
                 FloatingComponent component = instance.GetComponent<FloatingComponent>();
                 component.SpawnTag = new SpawnTag() { spawnInfo = spawnInfo};
 
@@ -61,5 +61,19 @@ public class FloatingComponentSpawner : MonoBehaviour
     {
         component.SpawnTag.spawner = null;
         component.SpawnTag.spawnInfo.spawned.Remove(component); // Remove if added
+    }
+
+    public IEnumerable<FloatingComponent> FindNearbySpawnedComponents(ShipStructure structure, float distance) 
+    {
+        foreach(SpawnInfo info in spawnInfos)
+        {
+            foreach(FloatingComponent spawned in info.spawned)
+            {
+                if(spawned.DistanceTo(structure) <= distance)
+                {
+                    yield return spawned;
+                }
+            }
+        }
     }
 }

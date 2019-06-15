@@ -28,6 +28,13 @@ public class ShipStructure : MonoBehaviour
     private List<Plank> planks = new List<Plank>();
     public IReadOnlyList<Plank> Planks => planks;
 
+    private Bounds bounds = new Bounds();
+
+    void Start()
+    {
+        RecalculateLayout();
+    }
+
     public bool AddPlank(Plank plank)
     {
         if(!planks.Contains(plank))
@@ -107,6 +114,22 @@ public class ShipStructure : MonoBehaviour
         return false;
     }
 
+    public Vector2 ClosestPoint(Vector2 point)
+    {
+        Vector2 local = transform.InverseTransformPoint(point);
+        // Closest point on local bounds
+        local = bounds.ClosestPoint(local);
+        return transform.TransformPoint(local);
+    }
+
+    public float DistanceTo(ShipStructure structure)
+    {
+        Vector2 closestOtherPoint = structure.ClosestPoint(transform.position);
+        Vector2 closestPoint = ClosestPoint(closestOtherPoint);
+        Debug.DrawLine(closestOtherPoint, closestPoint, Color.red, 1);
+        return Vector2.Distance(closestOtherPoint, closestPoint);
+    }
+
     private void RecalculateLayout()
     {
         int width = Mathf.CeilToInt(Mathf.Sqrt(planks.Count));
@@ -118,6 +141,13 @@ public class ShipStructure : MonoBehaviour
         RecalculatePlanks(width, height, halfWidth, halfHeight);
         RecalculateBow(width, halfHeight);
         RecalculateStern(width, height, halfWidth, halfHeight);
+        bounds.extents = new Vector3(
+            width * plankDimensions.x, 
+            height * plankDimensions.y + 
+                (bow ? bowDimensions.y * bow.transform.localScale.y : 0) + 
+                (stern ? sternDimensions.y * stern.transform.localScale.y : 0), 
+            2.0f
+        ) * 0.5f;
     }
 
     private void RecalculatePlanks(int width, int height, float halfWidth, float halfHeight)

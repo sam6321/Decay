@@ -9,6 +9,7 @@ TagManager:
   - Bow
   - Oar
   - Rudder
+  - Stern
   layers:
   - Default
   - TransparentFX
