@@ -38,7 +38,7 @@ public abstract class ShipComponent : MonoBehaviour
         moveCoroutine = null;
     }
 
-    public virtual bool Attach(ShipStructure structure)
+    public bool Attach(ShipStructure structure)
     {
         if(DoAttach(structure))
         {
@@ -50,7 +50,7 @@ public abstract class ShipComponent : MonoBehaviour
 
     protected abstract bool DoAttach(ShipStructure structure);
 
-    public virtual bool Detach()
+    public bool Detach()
     {
         if(!attachedStructure)
         {

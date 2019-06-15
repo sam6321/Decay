@@ -5,34 +5,28 @@ using UnityEngine;
 public class ShipStructure : MonoBehaviour
 {
     [SerializeField]
-    private Vector2 plankDimensions;
+    private Vector2 plankDimensions = new Vector2(0.6f, 3.1875f);
 
     [SerializeField]
-    private Vector2 bowDimensions;
+    private Vector2 bowDimensions = new Vector2(2.148438f, 1.734375f);
 
     [SerializeField]
-    private uint minPlanksRequiredForBow = 2;
+    private Vector2 sternDimensions = new Vector2(5.46f, 1.26f);
+
+    [SerializeField]
+    private uint minPlanksRequiredForBow = 4;
 
     [SerializeField]
     private Bow bow;
+    public Bow Bow => bow;
 
     [SerializeField]
-    private Rudder rudder;
+    private Stern stern;
+    public Stern Stern => stern;
 
     [SerializeField]
     private List<Plank> planks = new List<Plank>();
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    public IReadOnlyList<Plank> Planks => planks;
 
     public bool AddPlank(Plank plank)
     {
@@ -58,24 +52,24 @@ public class ShipStructure : MonoBehaviour
         return false;
     }
 
-    public bool AddRudder(Rudder rudder)
+    public bool AddStern(Stern stern)
     {
-        if(!this.rudder)
+        if(!this.stern)
         {
-            this.rudder = rudder;
-            rudder.transform.parent = transform;
+            this.stern = stern;
+            stern.transform.parent = transform;
             RecalculateLayout();
             return true;
         }
         return false;
     }
 
-    public bool RemoveRudder(Rudder rudder)
+    public bool RemoveStern(Stern stern)
     {
-        if(this.rudder == rudder)
+        if(this.stern == stern)
         {
-            this.rudder.transform.parent = null;
-            this.rudder = null;
+            this.stern.transform.parent = null;
+            this.stern = null;
             RecalculateLayout();
             return true;
         }
@@ -123,6 +117,7 @@ public class ShipStructure : MonoBehaviour
 
         RecalculatePlanks(width, height, halfWidth, halfHeight);
         RecalculateBow(width, halfHeight);
+        RecalculateStern(width, height, halfWidth, halfHeight);
     }
 
     private void RecalculatePlanks(int width, int height, float halfWidth, float halfHeight)
@@ -163,11 +158,17 @@ public class ShipStructure : MonoBehaviour
         }
     }
 
-    private void RecalculateRudder(int width, int height, float halfWidth, float halfHeight)
+    private void RecalculateStern(int width, int height, float halfWidth, float halfHeight)
     {
-        if(rudder)
+        if(stern)
         {
-            //rudder.MoveTo()
+            float newScale = (width * plankDimensions.x) / sternDimensions.x;
+            stern.MoveTo(
+                new Vector2(0, (halfHeight + 0.5f) * -plankDimensions.y - sternDimensions.y * newScale * 0.5f),
+                new Vector2(newScale, newScale),
+                0,
+                0.5f
+            );
         }
     }
 }

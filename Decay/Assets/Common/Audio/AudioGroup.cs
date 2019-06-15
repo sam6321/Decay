@@ -11,7 +11,7 @@ namespace Common
         /// <summary>
         /// The audio clips
         /// </summary>
-        public readonly AudioClip[] clips;
+        public AudioClip[] clips;
 
         /// <summary>
         /// Get a random audio clip from the clips
