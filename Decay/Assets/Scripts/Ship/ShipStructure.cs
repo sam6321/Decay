@@ -139,8 +139,8 @@ public class ShipStructure : MonoBehaviour
         float halfHeight = (Mathf.Max(0, height - 1)) / 2.0f;
 
         RecalculatePlanks(width, height, halfWidth, halfHeight);
-        RecalculateBow(width, halfHeight);
-        RecalculateStern(width, height, halfWidth, halfHeight);
+        RecalculateBow(width, height);
+        RecalculateStern(width, height);
         bounds.extents = new Vector3(
             width * plankDimensions.x, 
             height * plankDimensions.y + 
@@ -152,35 +152,61 @@ public class ShipStructure : MonoBehaviour
 
     private void RecalculatePlanks(int width, int height, float halfWidth, float halfHeight)
     {
-        // Work out the plank structure from the planks we have, then set each plank to move to the correct position
-        int i = 0;
-        for (int x = 0; x < width; x++)
+        int x = 0;
+        int y = 0;
+
+        int goal = 1;
+        bool xDir = true;
+
+        foreach(Plank plank in planks)
         {
-            for (int y = 0; y < height; y++)
+            plank.MoveTo(
+                new Vector2(x, y) * plankDimensions,
+                Vector2.one,
+                0,
+                0.5f
+            );
+
+            if(xDir)
             {
-                Plank plank = planks[i++];
-                plank.MoveTo(
-                    new Vector2(x - halfWidth, y - halfHeight) * plankDimensions,
-                    Vector2.one,
-                    0,
-                    0.5f
-                );
-                
-                if(i == planks.Count)
+                if(x != goal)
                 {
-                    return; // Consumed all planks
+                    x += goal > x ? 1 : -1;
+                }
+                else
+                {
+                    xDir = false;
+                    goal = -goal;
+                    y += goal > y ? 1 : -1;
+                }
+            }
+            else
+            {
+                if(y != goal)
+                {
+                    y += goal > y ? 1 : -1;
+                }
+                else
+                {
+                    xDir = true;
+                    goal = goal > 0 ? goal + 1 : goal;
+                    x += goal > x ? 1 : -1;
                 }
             }
         }
     }
 
-    private void RecalculateBow(int width, float halfHeight)
+    private void RecalculateBow(int width, int height)
     {
         if (bow)
         {
+            if(height % 2 == 0)
+            {
+                height -= 1;
+            }
             float newScale = (width * plankDimensions.x) / bowDimensions.x;
             bow.MoveTo(
-                new Vector2(0, (halfHeight + 0.5f) * plankDimensions.y + bowDimensions.y * newScale * 0.5f),
+                new Vector2((width % 2 == 0) ? 0.5f * plankDimensions.x : 0.0f, (float)height / 2.0f * plankDimensions.y + bowDimensions.y * newScale * 0.5f),
                 new Vector2(newScale, newScale),
                 0,
                 0.5f
@@ -188,13 +214,17 @@ public class ShipStructure : MonoBehaviour
         }
     }
 
-    private void RecalculateStern(int width, int height, float halfWidth, float halfHeight)
+    private void RecalculateStern(int width, int height)
     {
         if(stern)
         {
             float newScale = (width * plankDimensions.x) / sternDimensions.x;
+            if(height % 2 == 0)
+            {
+                height += 1;
+            }
             stern.MoveTo(
-                new Vector2(0, (halfHeight + 0.5f) * -plankDimensions.y - sternDimensions.y * newScale * 0.5f),
+                new Vector2((width % 2 == 0) ? 0.5f * plankDimensions.x : 0.0f, (float)height / 2.0f * -plankDimensions.y - sternDimensions.y * newScale * 0.5f),
                 new Vector2(newScale, newScale),
                 0,
                 0.5f
