@@ -14,6 +14,7 @@ public class FloatingComponent : MonoBehaviour
     private GameObject player;
     private Outline outline;
     private Collider2D collider2d;
+    private Rigidbody2D rigidbody2D;
     private PositionFollow positionFollow;
     private ShipComponent shipComponent;
 
@@ -31,6 +32,7 @@ public class FloatingComponent : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         collider2d = GetComponent<Collider2D>();
+        rigidbody2D = GetComponent<Rigidbody2D>();
         outline = GetComponent<Outline>();
         positionFollow = GetComponent<PositionFollow>();
         shipComponent = GetComponent<ShipComponent>();
@@ -53,8 +55,58 @@ public class FloatingComponent : MonoBehaviour
             Mathf.Cos(t * 2) - Mathf.Sin(t)
         );
 
-        transform.eulerAngles = new Vector3(0, 0, Mathf.Rad2Deg * (Mathf.Sin(t / 2) * Mathf.Cos(t * 2)));
-        transform.position = basePosition + vectorOffset;
+        if(rigidbody2D != null)
+        {
+            if(rigidbody2D.angularVelocity > 10.0f)
+            {
+                rigidbody2D.AddTorque(-0.1f);
+            }
+            else if(rigidbody2D.angularVelocity < -10.0f)
+            {
+                rigidbody2D.AddTorque(0.1f);
+            }
+            else
+            {
+                float desiredRot = Mathf.Rad2Deg * (Mathf.Sin(t / 2) * Mathf.Cos(t * 2)) - transform.eulerAngles.z;
+                while(desiredRot > 360.0f)
+                {
+                    desiredRot -= 360.0f;
+                }
+                while(desiredRot < 0.0f)
+                {
+                    desiredRot += 360.0f;
+                }
+                if(Mathf.Abs(desiredRot - 360.0f) < desiredRot)
+                {
+                    desiredRot -= 360.0f;
+                }
+                rigidbody2D.AddTorque(desiredRot > 0.0f ? 0.1f : -0.1f);
+            }
+            
+            var currPos = new Vector2(transform.position.x, transform.position.y);
+            var scale = new Vector2(0.01f, 0.01f);
+            var velocity = (basePosition + vectorOffset - currPos).normalized * scale;
+
+            if(rigidbody2D.velocity.x > 0.1f)
+            {
+                velocity.x = -0.01f;
+            }
+            else if(rigidbody2D.velocity.x < -0.1f)
+            {
+                velocity.x = 0.01f;
+            }
+
+            if(rigidbody2D.velocity.y > 10.0f)
+            {
+                velocity.y = -0.01f;
+            }
+            else if(rigidbody2D.velocity.y < -10.0f)
+            {
+                velocity.y = 0.01f;
+            }
+
+            rigidbody2D.AddForce(velocity);
+        }
 
         if(mask)
         {
@@ -109,7 +161,6 @@ public class FloatingComponent : MonoBehaviour
             SpawnTag.spawner.Remove(this);
 
             // Disable the FloatingComponent, as this has been attached to the ship
-            collider2d.enabled = false;
             // Set the layer to indicate we're now owned by the ship
             gameObject.layer = LayerMask.NameToLayer("ShipComponent");
             enabled = false;

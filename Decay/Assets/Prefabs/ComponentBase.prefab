@@ -95,7 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ef45b7b4070b7c45bba6243d3a3d575, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupDistance: 2
+  pickupDistance: 200
   timeScale: 0.1
 --- !u!114 &4655113696639001913
 MonoBehaviour:

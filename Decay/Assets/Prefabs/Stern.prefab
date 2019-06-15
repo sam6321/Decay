@@ -79,6 +79,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!50 &2450494600416579706
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8373691614976512638}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 5
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!60 &2571936428499164209
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -164,11 +185,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4655113696639001917, guid: 92c269ec14f49c74c9ae8a2757561382,
-        type: 3}
-      propertyPath: m_Name
-      value: Stern
-      objectReference: {fileID: 0}
     - target: {fileID: -2757914058833903268, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: m_MaskAlphaCutoff
@@ -193,6 +209,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001917, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: m_Name
+      value: Stern
       objectReference: {fileID: 0}
     - target: {fileID: 4655113696639001919, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
