@@ -35,11 +35,28 @@ public class ShipStructure : MonoBehaviour
         RecalculateLayout();
     }
 
+    private void OnAdd(GameObject gameObject)
+    {
+        gameObject.GetComponent<FloatingComponent>().enabled = false;
+        var body = gameObject.GetComponent<Rigidbody2D>();
+        body.isKinematic = true;
+        body.constraints = RigidbodyConstraints2D.FreezeAll;
+        body.velocity = new Vector2(0,0);
+    }
+
+    private void OnRemove(GameObject gameObject)
+    {
+        var body = gameObject.GetComponent<Rigidbody2D>();
+        body.isKinematic = false;
+        body.constraints = RigidbodyConstraints2D.None;
+    }
+
     public bool AddPlank(Plank plank)
     {
         if(!planks.Contains(plank))
         {
             // TODO: Max planks check
+            OnAdd(plank.gameObject);
             planks.Add(plank);
             plank.transform.parent = transform;
             RecalculateLayout();
@@ -54,6 +71,7 @@ public class ShipStructure : MonoBehaviour
         {
             plank.transform.parent = null;
             RecalculateLayout();
+            OnRemove(plank.gameObject);
             return true;
         }
         return false;
@@ -63,6 +81,7 @@ public class ShipStructure : MonoBehaviour
     {
         if(!this.stern)
         {
+            OnAdd(stern.gameObject);
             this.stern = stern;
             stern.transform.parent = transform;
             RecalculateLayout();
@@ -78,6 +97,7 @@ public class ShipStructure : MonoBehaviour
             this.stern.transform.parent = null;
             this.stern = null;
             RecalculateLayout();
+            OnRemove(stern.gameObject);
             return true;
         }
         return false;
@@ -94,6 +114,7 @@ public class ShipStructure : MonoBehaviour
                 return false;
             }
 
+            OnAdd(bow.gameObject);
             this.bow = bow;
             bow.transform.parent = transform;
             RecalculateLayout();
@@ -109,6 +130,7 @@ public class ShipStructure : MonoBehaviour
             this.bow.transform.parent = null;
             this.bow = null;
             RecalculateLayout();
+            OnRemove(bow.gameObject);
             return true;
         }
         return false;

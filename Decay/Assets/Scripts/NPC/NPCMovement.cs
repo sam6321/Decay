@@ -73,8 +73,6 @@ public class NPCMovement : MonoBehaviour
                 // Move forwards towards the target, slowing down as we get closer
                 movement.y = Mathf.Lerp(0.0f, 1.0f, Mathf.InverseLerp(0.0f, distanceSlowdownThreshold, distance));
             }
-
-            Debug.Log(movement);
         }
         else
         {
