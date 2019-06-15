@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShipStructure : MonoBehaviour
 {
     [SerializeField]
-    private Vector2 plankDimensions = new Vector2(0.6f, 3.1875f);
+    private Vector2 plankDimensions = new Vector2(0.6f, 2.06f);
 
     [SerializeField]
     private Vector2 bowDimensions = new Vector2(2.148438f, 1.734375f);
