@@ -29,6 +29,9 @@ public class NPCAI : MonoBehaviour
     [SerializeField]
     private float attackGiveUpTimeout = 15.0f;
 
+    [SerializeField]
+    private float attackBackoffTimeout = 10.0f; // Don't attack again for 10 seconds after attacking
+
     private FloatingComponentSpawner componentSpawner;
     private ShipManager shipManager;
 
@@ -67,7 +70,8 @@ public class NPCAI : MonoBehaviour
         }
 
         // Check for nearby items, if any are found, transition to pick up
-        if(itemCheckCooldown.Check(Time.time) && FindNearbyFloatingComponent(out FloatingComponent floatingComponent))
+        if(itemCheckCooldown.Check(Time.time) && 
+            FindNearbyFloatingComponent(out FloatingComponent floatingComponent))
         {
             // Found something!
             Debug.Log("Going to try picking up " + floatingComponent.tag);
@@ -76,7 +80,9 @@ public class NPCAI : MonoBehaviour
         }
 
         // Check for nearby weak enemies, if any are found, transition to attack
-        if(boatCheckCooldown.Check(Time.time) && FindNearbyBoatTarget(out ShipStructure target))
+        if(boatCheckCooldown.Check(Time.time) && 
+            (attackBackoffTime + attackBackoffTimeout <= Time.time) && // Don't attack again too soon, wait for the timeout first
+            FindNearbyBoatTarget(out ShipStructure target))
         {
             currentBoatTarget = target;
             fsm.ChangeState(States.Attack);
@@ -129,6 +135,7 @@ public class NPCAI : MonoBehaviour
 
     private ShipStructure currentBoatTarget;
     private float attackStartTime = 0;
+    private float attackBackoffTime = 0;
 
     void Attack_Enter()
     {
@@ -142,7 +149,7 @@ public class NPCAI : MonoBehaviour
         movement.MovementTarget = currentBoatTarget.transform.position;
 
         // If chasing enemy for too long, return to roam
-        if(Time.time - attackStartTime > attackGiveUpTimeout)
+        if(attackStartTime + attackGiveUpTimeout <= Time.time)
         {
             fsm.ChangeState(States.Roam);
         }
@@ -152,6 +159,7 @@ public class NPCAI : MonoBehaviour
     {
         Debug.Log("Attack_Exit");
         movement.MovementTarget = null;
+        attackBackoffTime = Time.time;
     }
 
     // Flee
