@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float horizontalForwardMovementForce = 50f;
 
-    private float rotationTorqueMultiplier = 1f;
+    private float rotationTorqueMultiplier = 2f;
 
     private Rigidbody2D rigidbody2D;
     private ShipStructure structure;
@@ -17,7 +17,8 @@ public class PlayerMovement : MonoBehaviour
     private float bowForce = 1.5f;
     private float oarForce = 1.05f;
     private float sternRotationMultiplier = 1.5f;
-    private float massMultiplier = 0.25f;
+    private float massMultiplier = 0.1f;
+    private float massBase = 1f;
     private float angularDragMultiplier = 5f;
 
     void Start()
@@ -40,28 +41,25 @@ public class PlayerMovement : MonoBehaviour
         int rightOars = numOars / 2;
         int width = structure.Width;
         int numPlanks = structure.Planks.Count;
-        rigidbody2D.mass = numPlanks * massMultiplier;
-        rigidbody2D.angularDrag = numPlanks * angularDragMultiplier;
+        rigidbody2D.mass = massBase + numPlanks * massMultiplier;
+        rigidbody2D.angularDrag = numPlanks * (numPlanks < 3 ? angularDragMultiplier / 2f : angularDragMultiplier);
 
         if(numOars % 2 == 1)
         {
             leftOars++;
         }
 
-        float leftForce = movement.y * forwardMovementForce;
-        float rightForce = movement.y * forwardMovementForce;
-
-        leftForce *= hasBow ? bowForce : 1f;
-        rightForce *= hasBow ? bowForce : 1f;
+        float leftForce = forwardMovementForce;
+        float rightForce = forwardMovementForce;
 
         leftForce *= (leftOars + 1f) * oarForce;
         rightForce *= (rightOars + 1f) * oarForce;
 
-        rigidbody2D.AddForce(transform.up * (leftForce + rightForce) * Time.fixedDeltaTime);
+        rigidbody2D.AddForce(transform.up * (leftForce + rightForce) * movement.y * (hasBow ? bowForce : 1f) * Time.fixedDeltaTime);
 
         if(!hasStern)
         {
-            rigidbody2D.AddTorque((rightForce - leftForce) * width / 2f * rotationTorqueMultiplier * Time.fixedDeltaTime);
+            rigidbody2D.AddTorque((rightForce - leftForce) * width / 2f * movement.y * rotationTorqueMultiplier * Time.fixedDeltaTime);
         }
 
         leftForce *= movement.x;
