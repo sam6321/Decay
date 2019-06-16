@@ -209,6 +209,8 @@ public class FloatingComponent : MonoBehaviour
             // Disable the FloatingComponent, as this has been attached to the ship
             // Set the layer to indicate we're now owned by the ship
             gameObject.layer = LayerMask.NameToLayer("ShipComponent");
+            Destroy(rigidbody2D);
+            rigidbody2D = null;
             enabled = false;
             outline.eraseRenderer = true;
             mouseOver = false;
@@ -237,6 +239,8 @@ public class FloatingComponent : MonoBehaviour
             }
 
             gameObject.layer = LayerMask.NameToLayer("FloatingComponent");
+            rigidbody2D = gameObject.AddComponent<Rigidbody2D>();
+            rigidbody2D.gravityScale = 0;
             enabled = true;
             renderer.maskInteraction = oldMaskInteraction;
 
