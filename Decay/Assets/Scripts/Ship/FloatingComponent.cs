@@ -228,7 +228,13 @@ public class FloatingComponent : MonoBehaviour
     {
         if(!enabled && shipComponent.Detach())
         {
-            if(SpawnTag != null)
+            gameObject.layer = LayerMask.NameToLayer("FloatingComponent");
+            rigidbody2D = gameObject.AddComponent<Rigidbody2D>();
+            rigidbody2D.gravityScale = 0;
+            enabled = true;
+            renderer.maskInteraction = oldMaskInteraction;
+
+            if (SpawnTag != null)
             {
                 SpawnTag.spawner.Add(this);
             }
@@ -237,12 +243,6 @@ public class FloatingComponent : MonoBehaviour
                 // Never owned by a spawner, so we're going to obliterate ourself here
                 Destroy(gameObject);
             }
-
-            gameObject.layer = LayerMask.NameToLayer("FloatingComponent");
-            rigidbody2D = gameObject.AddComponent<Rigidbody2D>();
-            rigidbody2D.gravityScale = 0;
-            enabled = true;
-            renderer.maskInteraction = oldMaskInteraction;
 
             return true;
         }

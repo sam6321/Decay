@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
         int width = structure.Width;
         int numPlanks = structure.Planks.Count;
         rigidbody2D.mass = massBase + numPlanks * massMultiplier;
-        rigidbody2D.angularDrag = numPlanks * angularDragMultiplier / 2f;
+        //rigidbody2D.angularDrag = numPlanks * angularDragMultiplier / 2f;
 
         if(numOars % 2 == 1)
         {
