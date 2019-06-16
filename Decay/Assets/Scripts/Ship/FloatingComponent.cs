@@ -29,8 +29,8 @@ public class FloatingComponent : MonoBehaviour
 
     private SpriteMask mask;
     private const float maskDeltaMagnitude = 0.0001f;
-    private const float maskMax = 0.8f;
-    private const float maskMin = 0.6f;
+    private const float maskMax = 0.62f;
+    private const float maskMin = 0.355f;
     private float maskDelta = maskDeltaMagnitude;
 
     private void Start()
