@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class ShipStructure : MonoBehaviour
 {
-    class PlankInfo
-    {
-        public Plank plank;
-        public Vector2 position;
-    }
-
     [SerializeField]
     private Vector2 plankDimensions = new Vector2(0.6f, 2.06f);
 
@@ -23,12 +17,22 @@ public class ShipStructure : MonoBehaviour
     private uint minPlanksRequiredForBow = 4;
 
     [SerializeField]
+    private uint minPlanksRequiredForStern = 4;
+
+    [SerializeField]
     private Bow bow;
     public Bow Bow => bow;
 
     [SerializeField]
     private Stern stern;
     public Stern Stern => stern;
+
+    public float BowHealth { get; set; } = 0;
+    public float SternHealth { get; set; } = 0;
+    public float PlanksHealth { get; set; } = 0;
+
+    [SerializeField]
+    private float healthPerPlank = 20.0f;
 
     /*[SerializeField]
     private Weapon weapon;
@@ -45,10 +49,62 @@ public class ShipStructure : MonoBehaviour
     public IReadOnlyList<Oar> Oars => oars;
 
     private Bounds bounds = new Bounds();
+    private bool noRecalcLayout = false;
 
-    void Start()
+    private void Start()
     {
         RecalculateLayout();
+        PlanksHealth = healthPerPlank * planks.Count;
+    }
+
+    private void Update()
+    {
+        if (stern)
+        {
+            SternHealth -= 2 * Time.deltaTime;
+            if (SternHealth <= 0)
+            {
+                SternHealth = 0;
+                if(!stern.FloatingComponent.TryReturnToSpawner())
+                {
+                    Debug.LogError("Should not happen");
+                }
+            }
+        }
+
+        if(bow)
+        {
+            BowHealth -= 2 * Time.deltaTime;
+            if(BowHealth <= 0)
+            {
+                BowHealth = 0;
+                if(!bow.FloatingComponent.TryReturnToSpawner())
+                {
+                    Debug.LogError("Should not happen");
+                }
+            }
+        }
+
+        if(planks.Count > 0)
+        {
+            float drain = planks.Count == 1 ? 1.0f : 5.0f;
+            PlanksHealth -= drain * Time.deltaTime;
+            while(PlanksHealth < (healthPerPlank * (planks.Count - 1)) && Planks.Count > 0)
+            {
+                if(!planks[planks.Count - 1].FloatingComponent.TryReturnToSpawner())
+                {
+                    Debug.LogError("Should not happen");
+                }
+            }
+
+            if(PlanksHealth <= 0)
+            {
+                PlanksHealth = 0;
+                Debug.Log("You lose");
+                Destroy(gameObject);
+                // TODO: proper lose
+            }
+        }
     }
 
     private void OnAdd(GameObject gameObject)
@@ -75,6 +131,7 @@ public class ShipStructure : MonoBehaviour
             OnAdd(plank.gameObject);
             planks.Add(plank);
             plank.transform.parent = transform;
+            PlanksHealth += healthPerPlank;
             RecalculateLayout();
             return true;
         }
@@ -97,9 +154,17 @@ public class ShipStructure : MonoBehaviour
     {
         if(!this.stern)
         {
+            if(planks.Count < minPlanksRequiredForStern)
+            {
+                // Player hasn't met required planks
+                // TODO: popup text here maybe saying "can't grab this"
+                return false;
+            }
+
             OnAdd(stern.gameObject);
             this.stern = stern;
             stern.transform.parent = transform;
+            SternHealth = 100f;
             RecalculateLayout();
             return true;
         }
@@ -133,6 +198,7 @@ public class ShipStructure : MonoBehaviour
             OnAdd(bow.gameObject);
             this.bow = bow;
             bow.transform.parent = transform;
+            BowHealth = 100f;
             RecalculateLayout();
             return true;
         }
@@ -196,6 +262,11 @@ public class ShipStructure : MonoBehaviour
 
     private void RecalculateLayout()
     {
+        if(noRecalcLayout)
+        {
+            return; // skip layout recalc for now
+        }
+
         int width = Width;
         int height = Height;
 
@@ -328,5 +399,13 @@ public class ShipStructure : MonoBehaviour
                 }
             }
         }
+
+        // Some oars left over need dropping because we don't have the planks to support them
+        noRecalcLayout = true; // pretty bad hack to prevent layout recalculation while we're removing oars
+        for (int count = oars.Count; index < count; index++)
+        {
+            oars[oars.Count - 1].FloatingComponent.TryReturnToSpawner();
+        }
+        noRecalcLayout = false;
     }
 }

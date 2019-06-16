@@ -6,6 +6,14 @@ public abstract class ShipComponent : MonoBehaviour
     protected ShipStructure attachedStructure;
     private Coroutine moveCoroutine;
 
+    private FloatingComponent floatingComponent;
+    public FloatingComponent FloatingComponent => floatingComponent;
+
+    private void Start()
+    {
+        floatingComponent = GetComponent<FloatingComponent>();
+    }
+
     public void MoveTo(Vector2 localTarget, Vector2 localScale, float rotation, float period)
     {
         if(moveCoroutine != null)

@@ -27,15 +27,21 @@ public class FloatingComponent : MonoBehaviour
     private float offset;
     private Vector2 basePosition;
 
+    private SpriteRenderer renderer;
     private SpriteMask mask;
     private const float maskDeltaMagnitude = 0.0001f;
     private const float maskMax = 0.62f;
     private const float maskMin = 0.355f;
     private float maskDelta = maskDeltaMagnitude;
+    private SpriteMaskInteraction oldMaskInteraction;
 
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<ShipStructure>();
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if(player)
+        {
+            this.player = player.GetComponent<ShipStructure>();
+        }
         collider2d = GetComponent<Collider2D>();
         rigidbody2D = GetComponent<Rigidbody2D>();
         outline = GetComponent<Outline>();
@@ -46,73 +52,27 @@ public class FloatingComponent : MonoBehaviour
         offset = Random.Range(0, 100);
         basePosition = transform.position;
         mask = GetComponent<SpriteMask>();
-        if(mask)
+        renderer = GetComponent<SpriteRenderer>();
+        if (mask)
         {
             mask.alphaCutoff = UnityEngine.Random.Range(maskMin, maskMax);
+        }
+
+        // floating component is set to execute after last after othe scripts, but before the floating component spawner
+        if (transform.parent)
+        {
+            // Spawned parented to something, so assume try attaching to it!
+            ShipStructure structure = transform.parent.GetComponent<ShipStructure>();
+            if (structure)
+            {
+                // Attach to that bad boy
+                TryAttachToShip(structure);
+            }
         }
     }
 
     private void Update()
     {
-        float t = (Time.time + offset) * timeScale;
-        Vector2 vectorOffset = new Vector2(
-            Mathf.Sin(t) + Mathf.Cos(t / 2),
-            Mathf.Cos(t * 2) - Mathf.Sin(t)
-        );
-
-        if(rigidbody2D != null)
-        {
-            if(rigidbody2D.angularVelocity > 10.0f)
-            {
-                rigidbody2D.AddTorque(-0.1f);
-            }
-            else if(rigidbody2D.angularVelocity < -10.0f)
-            {
-                rigidbody2D.AddTorque(0.1f);
-            }
-            else
-            {
-                float desiredRot = Mathf.Rad2Deg * (Mathf.Sin(t / 2) * Mathf.Cos(t * 2)) - transform.eulerAngles.z;
-                while(desiredRot > 360.0f)
-                {
-                    desiredRot -= 360.0f;
-                }
-                while(desiredRot < 0.0f)
-                {
-                    desiredRot += 360.0f;
-                }
-                if(Mathf.Abs(desiredRot - 360.0f) < desiredRot)
-                {
-                    desiredRot -= 360.0f;
-                }
-                rigidbody2D.AddTorque(desiredRot > 0.0f ? 0.1f : -0.1f);
-            }
-            
-            var currPos = new Vector2(transform.position.x, transform.position.y);
-            var scale = new Vector2(0.01f, 0.01f);
-            var velocity = (basePosition + vectorOffset - currPos).normalized * scale;
-
-            if(rigidbody2D.velocity.x > 0.1f)
-            {
-                velocity.x = -0.01f;
-            }
-            else if(rigidbody2D.velocity.x < -0.1f)
-            {
-                velocity.x = 0.01f;
-            }
-
-            if(rigidbody2D.velocity.y > 10.0f)
-            {
-                velocity.y = -0.01f;
-            }
-            else if(rigidbody2D.velocity.y < -10.0f)
-            {
-                velocity.y = 0.01f;
-            }
-
-            rigidbody2D.AddForce(velocity);
-        }
-
         if(mask)
         {
             mask.alphaCutoff += maskDelta;
@@ -127,9 +87,71 @@ public class FloatingComponent : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        float t = (Time.time + offset) * timeScale;
+        Vector2 vectorOffset = new Vector2(
+            Mathf.Sin(t) + Mathf.Cos(t / 2),
+            Mathf.Cos(t * 2) - Mathf.Sin(t)
+        );
+
+        if (rigidbody2D != null)
+        {
+            if (rigidbody2D.angularVelocity > 10.0f)
+            {
+                rigidbody2D.AddTorque(-0.1f * 100 * Time.fixedDeltaTime);
+            }
+            else if (rigidbody2D.angularVelocity < -10.0f)
+            {
+                rigidbody2D.AddTorque(0.1f * 100 * Time.fixedDeltaTime);
+            }
+            else
+            {
+                float desiredRot = Mathf.Rad2Deg * (Mathf.Sin(t / 2) * Mathf.Cos(t * 2)) - transform.eulerAngles.z;
+                while (desiredRot > 360.0f)
+                {
+                    desiredRot -= 360.0f;
+                }
+                while (desiredRot < 0.0f)
+                {
+                    desiredRot += 360.0f;
+                }
+                if (Mathf.Abs(desiredRot - 360.0f) < desiredRot)
+                {
+                    desiredRot -= 360.0f;
+                }
+                rigidbody2D.AddTorque((desiredRot > 0.0f ? 0.1f : -0.1f) * 100 * Time.fixedDeltaTime);
+            }
+
+            var currPos = new Vector2(transform.position.x, transform.position.y);
+            var scale = new Vector2(0.01f, 0.01f);
+            var velocity = (basePosition + vectorOffset - currPos).normalized * scale;
+
+            if (rigidbody2D.velocity.x > 0.1f)
+            {
+                velocity.x = -0.01f;
+            }
+            else if (rigidbody2D.velocity.x < -0.1f)
+            {
+                velocity.x = 0.01f;
+            }
+
+            if (rigidbody2D.velocity.y > 10.0f)
+            {
+                velocity.y = -0.01f;
+            }
+            else if (rigidbody2D.velocity.y < -10.0f)
+            {
+                velocity.y = 0.01f;
+            }
+
+            rigidbody2D.AddForce(velocity * 100 * Time.fixedDeltaTime);
+        }
+    }
+
     private void OnMouseOver()
     {
-        if(enabled && outline.eraseRenderer && CanPickup(player))
+        if(enabled && outline.eraseRenderer && player && CanPickup(player))
         {
             outline.eraseRenderer = false;
             mouseOver = true;
@@ -140,7 +162,10 @@ public class FloatingComponent : MonoBehaviour
     {
         if(mouseOver && enabled)
         {
-            TryAttachToShip(player);
+            if (player)
+            {
+                TryAttachToShip(player);
+            }
         }
     }
 
@@ -175,8 +200,11 @@ public class FloatingComponent : MonoBehaviour
             // Attach was successful, so remove this from the spawner and 
             // disable the floating behaviours
 
-            // Release from the spawner, as this is now owned by the ship
-            SpawnTag.spawner.Remove(this);
+            // Release from the spawner if it was owned by it, as this is now owned by the ship
+            if(SpawnTag != null)
+            {
+                SpawnTag.spawner.Remove(this);
+            }
 
             // Disable the FloatingComponent, as this has been attached to the ship
             // Set the layer to indicate we're now owned by the ship
@@ -185,6 +213,32 @@ public class FloatingComponent : MonoBehaviour
             outline.eraseRenderer = true;
             mouseOver = false;
             mask.alphaCutoff = 0;
+            oldMaskInteraction = renderer.maskInteraction;
+            renderer.maskInteraction = SpriteMaskInteraction.None;
+            
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool TryReturnToSpawner()
+    {
+        if(!enabled && shipComponent.Detach())
+        {
+            if(SpawnTag != null)
+            {
+                SpawnTag.spawner.Add(this);
+            }
+            else
+            {
+                // Never owned by a spawner, so we're going to obliterate ourself here
+                Destroy(gameObject);
+            }
+
+            gameObject.layer = LayerMask.NameToLayer("FloatingComponent");
+            enabled = true;
+            renderer.maskInteraction = oldMaskInteraction;
 
             return true;
         }

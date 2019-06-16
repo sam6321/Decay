@@ -120,6 +120,40 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!84 &137178021
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  serializedVersion: 3
+  m_Width: 1101
+  m_Height: 635
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 8
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &319078399
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,7 +204,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 0
   m_RenderingPath: 1
-  m_TargetTexture: {fileID: 2082992810}
+  m_TargetTexture: {fileID: 137178021}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -307,10 +341,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Plank1
       objectReference: {fileID: 0}
+    - target: {fileID: 5983945218485328235, guid: 3b762b396e5c0c040829ef97c8712f3b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5983945218485328232, guid: 3b762b396e5c0c040829ef97c8712f3b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.67
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5983945218485328232, guid: 3b762b396e5c0c040829ef97c8712f3b,
         type: 3}
@@ -365,7 +404,7 @@ PrefabInstance:
     - target: {fileID: 5983945218485328234, guid: 3b762b396e5c0c040829ef97c8712f3b,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5983945218485328239, guid: 3b762b396e5c0c040829ef97c8712f3b,
         type: 3}
@@ -380,11 +419,16 @@ PrefabInstance:
     - target: {fileID: 1657404621782590406, guid: 3b762b396e5c0c040829ef97c8712f3b,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1411620840979459254, guid: 3b762b396e5c0c040829ef97c8712f3b,
         type: 3}
       propertyPath: m_Simulated
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5983945218485328233, guid: 3b762b396e5c0c040829ef97c8712f3b,
+        type: 3}
+      propertyPath: m_MaskInteraction
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6795664246689981332, guid: 3b762b396e5c0c040829ef97c8712f3b,
@@ -463,7 +507,7 @@ GameObject:
   - component: {fileID: 543243510}
   m_Layer: 0
   m_Name: NPC
-  m_TagString: Untagged
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -563,8 +607,10 @@ MonoBehaviour:
   bowDimensions: {x: 2.148438, y: 1.734375}
   sternDimensions: {x: 5.46, y: 1.26}
   minPlanksRequiredForBow: 4
+  minPlanksRequiredForStern: 4
   bow: {fileID: 0}
   stern: {fileID: 0}
+  healthPerPlank: 20
   planks:
   - {fileID: 370901442}
   oars: []
@@ -734,7 +780,7 @@ PrefabInstance:
     - target: {fileID: 5983945218485328234, guid: 3b762b396e5c0c040829ef97c8712f3b,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5983945218485328239, guid: 3b762b396e5c0c040829ef97c8712f3b,
         type: 3}
@@ -761,6 +807,11 @@ PrefabInstance:
       propertyPath: m_BodyType
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5983945218485328233, guid: 3b762b396e5c0c040829ef97c8712f3b,
+        type: 3}
+      propertyPath: m_MaskInteraction
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6795664246689981332, guid: 3b762b396e5c0c040829ef97c8712f3b,
         type: 3}
       propertyPath: m_Simulated
@@ -784,13 +835,12 @@ GameObject:
   - component: {fileID: 874974485}
   - component: {fileID: 874974488}
   - component: {fileID: 874974487}
-  - component: {fileID: 874974486}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967294
   m_IsActive: 1
 --- !u!4 &874974485
 Transform:
@@ -806,20 +856,6 @@ Transform:
   m_Father: {fileID: 480883761}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
---- !u!64 &874974486
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 874974484}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &874974487
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -865,6 +901,40 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 874974484}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!84 &942076590
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  serializedVersion: 3
+  m_Width: 1101
+  m_Height: 635
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 8
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -997,54 +1067,8 @@ MonoBehaviour:
   sourceCamera: {fileID: 963194227}
   outlineCamera: {fileID: 319078400}
   outlineShaderMaterial: {fileID: 0}
-  renderTexture: {fileID: 2082992810}
-  extraRenderTexture: {fileID: 1241183474}
---- !u!84 &1241183474
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  serializedVersion: 3
-  m_Width: 1101
-  m_Height: 635
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 8
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
---- !u!114 &1499625323 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7391260761249526606, guid: 3b762b396e5c0c040829ef97c8712f3b,
-    type: 3}
-  m_PrefabInstance: {fileID: 728175147}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d7bca7f11e3830db8646f2ce25c8bec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  renderTexture: {fileID: 137178021}
+  extraRenderTexture: {fileID: 942076590}
 --- !u!4 &1499625330 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5983945218485328232, guid: 3b762b396e5c0c040829ef97c8712f3b,
@@ -1137,42 +1161,9 @@ MonoBehaviour:
   bowDimensions: {x: 2.148438, y: 1.734375}
   sternDimensions: {x: 5.46, y: 1.26}
   minPlanksRequiredForBow: 4
+  minPlanksRequiredForStern: 4
   bow: {fileID: 0}
   stern: {fileID: 0}
-  planks:
-  - {fileID: 1499625323}
+  healthPerPlank: 20
+  planks: []
   oars: []
---- !u!84 &2082992810
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  serializedVersion: 3
-  m_Width: 1101
-  m_Height: 635
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 8
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1

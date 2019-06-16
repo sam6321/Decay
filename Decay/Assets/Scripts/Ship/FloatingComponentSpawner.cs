@@ -9,6 +9,7 @@ public class FloatingComponentSpawner : MonoBehaviour
     {
         public FloatingComponentSpawner spawner;
         public SpawnInfo spawnInfo;
+        public bool ownedBySpawner;
     }
 
     [Serializable]
@@ -37,7 +38,7 @@ public class FloatingComponentSpawner : MonoBehaviour
                 // TODO: Set position properly so it doesn't spawn inside the camera's view
                 GameObject instance = Instantiate(prefab, UnityEngine.Random.insideUnitCircle * 40, Quaternion.identity);
                 FloatingComponent component = instance.GetComponent<FloatingComponent>();
-                component.SpawnTag = new SpawnTag() { spawnInfo = spawnInfo };
+                component.SpawnTag = new SpawnTag() { spawnInfo = spawnInfo, spawner = this };
 
                 // Note, after instantiating this object, start won't be called until next frame. To prevent other objects from running
                 // into trouble trying to use a non-initialised floating component, the script execution of the spawner is set to be after
@@ -53,7 +54,7 @@ public class FloatingComponentSpawner : MonoBehaviour
 
     public void Add(FloatingComponent component)
     {
-        component.SpawnTag.spawner = this;
+        component.SpawnTag.ownedBySpawner = true;
         if(!component.SpawnTag.spawnInfo.spawned.Contains(component))
         {
             // Add if this spawner doesn't already own the component
@@ -63,7 +64,7 @@ public class FloatingComponentSpawner : MonoBehaviour
 
     public void Remove(FloatingComponent component)
     {
-        component.SpawnTag.spawner = null;
+        component.SpawnTag.ownedBySpawner = false;
         component.SpawnTag.spawnInfo.spawned.Remove(component); // Remove if added
     }
 
