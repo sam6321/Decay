@@ -1,9 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ShipStructure : MonoBehaviour
 {
+    [System.Serializable]
+    public class OnLoseEvent : UnityEvent<ShipStructure> { }
+
     [SerializeField]
     private Vector2 plankDimensions = new Vector2(0.6f, 2.06f);
 
@@ -32,7 +35,16 @@ public class ShipStructure : MonoBehaviour
     public float PlanksHealth { get; set; } = 0;
 
     [SerializeField]
-    private float healthPerPlank = 20.0f;
+    private float healthPerPlank = 20;
+    public float HealthPerPlank => healthPerPlank;
+
+    [SerializeField]
+    private float bowMaxHealth = 100;
+    public float BowMaxHealth => bowMaxHealth;
+
+    [SerializeField]
+    private float sternMaxHealth = 100;
+    public float SternMaxHealth => sternMaxHealth;
 
     /*[SerializeField]
     private Weapon weapon;
@@ -48,6 +60,10 @@ public class ShipStructure : MonoBehaviour
     private List<Oar> oars = new List<Oar>();
     public IReadOnlyList<Oar> Oars => oars;
 
+    [SerializeField]
+    private OnLoseEvent onLose = new OnLoseEvent();
+    public OnLoseEvent OnLose => onLose;
+
     private Bounds bounds = new Bounds();
     private bool noRecalcLayout = false;
 
@@ -61,74 +77,58 @@ public class ShipStructure : MonoBehaviour
     {
         if (stern)
         {
-            SternHealth -= 2 * Time.deltaTime;
-            if (SternHealth <= 0)
-            {
-                SternHealth = 0;
-                if(!stern.FloatingComponent.TryReturnToSpawner())
-                {
-                    Debug.LogError("Should not happen");
-                }
-            }
+            DamageStern(2 * Time.deltaTime);
         }
 
         if(bow)
         {
-            BowHealth -= 2 * Time.deltaTime;
-            if(BowHealth <= 0)
-            {
-                BowHealth = 0;
-                if(!bow.FloatingComponent.TryReturnToSpawner())
-                {
-                    Debug.LogError("Should not happen");
-                }
-            }
+            DamageBow(2 * Time.deltaTime);
         }
 
         if(planks.Count > 0)
         {
             float drain = planks.Count == 1 ? 1.0f : 5.0f;
-            PlanksHealth -= drain * Time.deltaTime;
-            while(PlanksHealth < (healthPerPlank * (planks.Count - 1)) && Planks.Count > 0)
-            {
-                if(!planks[planks.Count - 1].FloatingComponent.TryReturnToSpawner())
-                {
-                    Debug.LogError("Should not happen");
-                }
-            }
-
-            if(PlanksHealth <= 0)
-            {
-                PlanksHealth = 0;
-                Debug.Log("You lose");
-                Destroy(gameObject);
-                // TODO: proper lose
-            }
+            DamagePlanks(drain * Time.deltaTime);
         }
     }
 
-    private void OnAdd(GameObject gameObject)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        gameObject.GetComponent<FloatingComponent>().enabled = false;
-        var body = gameObject.GetComponent<Rigidbody2D>();
-        body.isKinematic = true;
-        body.constraints = RigidbodyConstraints2D.FreezeAll;
-        body.velocity = new Vector2(0,0);
-    }
+        // Calculate the damage we should take on collision
+        ShipStructure otherStructure = collision.rigidbody.GetComponent<ShipStructure>();
+        if(!otherStructure)
+        {
+            return; // Not colliding with a ship
+        }
 
-    private void OnRemove(GameObject gameObject)
-    {
-        var body = gameObject.GetComponent<Rigidbody2D>();
-        body.isKinematic = false;
-        body.constraints = RigidbodyConstraints2D.None;
+        // What are we applying damage to?
+        Collider2D otherCollider = collision.otherCollider;
+        if(otherCollider.CompareTag("Plank"))
+        {
+            Debug.Log("Plank damage");
+            DamagePlanks(10);
+        }
+        else if(otherCollider.CompareTag("Bow"))
+        {
+            Debug.Log("Bow damage");
+            DamageBow(10);
+        }
+        else if(otherCollider.CompareTag("Stern"))
+        {
+            Debug.Log("Stern damage");
+            DamageStern(10);
+        }
+
+        Vector2 direction = collision.otherRigidbody.position - collision.rigidbody.position;
+        collision.otherRigidbody.AddForce(direction.normalized * 100);
+
     }
 
     public bool AddPlank(Plank plank)
     {
         if(!planks.Contains(plank))
         {
-            // TODO: Max planks check
-            OnAdd(plank.gameObject);
+            // TODO: Max planks check?
             planks.Add(plank);
             plank.transform.parent = transform;
             PlanksHealth += healthPerPlank;
@@ -144,10 +144,30 @@ public class ShipStructure : MonoBehaviour
         {
             plank.transform.parent = null;
             RecalculateLayout();
-            OnRemove(plank.gameObject);
             return true;
         }
         return false;
+    }
+
+    public void DamagePlanks(float amount)
+    {
+        PlanksHealth -= amount; 
+        while (PlanksHealth < (healthPerPlank * (planks.Count - 1)) && Planks.Count > 0)
+        {
+            if (!planks[planks.Count - 1].FloatingComponent.TryReturnToSpawner())
+            {
+                Debug.LogError("Should not happen");
+            }
+        }
+
+        if (PlanksHealth <= 0)
+        {
+            PlanksHealth = 0;
+            Debug.Log("You lose");
+            OnLose.Invoke(this);
+            Destroy(gameObject);
+            // TODO: proper lose
+        }
     }
 
     public bool AddStern(Stern stern)
@@ -161,7 +181,6 @@ public class ShipStructure : MonoBehaviour
                 return false;
             }
 
-            OnAdd(stern.gameObject);
             this.stern = stern;
             stern.transform.parent = transform;
             SternHealth = 100f;
@@ -178,10 +197,22 @@ public class ShipStructure : MonoBehaviour
             this.stern.transform.parent = null;
             this.stern = null;
             RecalculateLayout();
-            OnRemove(stern.gameObject);
             return true;
         }
         return false;
+    }
+
+    public void DamageStern(float amount)
+    {
+        SternHealth -= amount;
+        if (SternHealth <= 0)
+        {
+            SternHealth = 0;
+            if (!stern.FloatingComponent.TryReturnToSpawner())
+            {
+                Debug.LogError("Should not happen");
+            }
+        }
     }
 
     public bool AddBow(Bow bow)
@@ -195,7 +226,6 @@ public class ShipStructure : MonoBehaviour
                 return false;
             }
 
-            OnAdd(bow.gameObject);
             this.bow = bow;
             bow.transform.parent = transform;
             BowHealth = 100f;
@@ -212,10 +242,22 @@ public class ShipStructure : MonoBehaviour
             this.bow.transform.parent = null;
             this.bow = null;
             RecalculateLayout();
-            OnRemove(bow.gameObject);
             return true;
         }
         return false;
+    }
+
+    public void DamageBow(float amount)
+    {
+        BowHealth -= amount;
+        if (BowHealth <= 0)
+        {
+            BowHealth = 0;
+            if (!bow.FloatingComponent.TryReturnToSpawner())
+            {
+                Debug.LogError("Should not happen");
+            }
+        }
     }
 
     public bool AddOar(Oar oar)
@@ -223,7 +265,6 @@ public class ShipStructure : MonoBehaviour
         if(!oars.Contains(oar) && oars.Count < Height * 2)
         {
             // TODO: Check if oar can be added based on planks count
-            OnAdd(oar.gameObject);
             oars.Add(oar);
             oar.transform.parent = transform;
             RecalculateLayout();
@@ -238,7 +279,6 @@ public class ShipStructure : MonoBehaviour
         {
             oar.transform.parent = null;
             RecalculateLayout();
-            OnRemove(oar.gameObject);
             return true;
         }
         return false;
