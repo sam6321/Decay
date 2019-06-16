@@ -27,7 +27,7 @@ public class FloatingComponentSpawner : MonoBehaviour
     [SerializeField]
     private SpawnInfo[] spawnInfos;
 
-    void Update()
+    void LateUpdate()
     {
         foreach(SpawnInfo spawnInfo in spawnInfos)
         {
@@ -37,7 +37,11 @@ public class FloatingComponentSpawner : MonoBehaviour
                 // TODO: Set position properly so it doesn't spawn inside the camera's view
                 GameObject instance = Instantiate(prefab, UnityEngine.Random.insideUnitCircle * 40, Quaternion.identity);
                 FloatingComponent component = instance.GetComponent<FloatingComponent>();
-                component.SpawnTag = new SpawnTag() { spawnInfo = spawnInfo};
+                component.SpawnTag = new SpawnTag() { spawnInfo = spawnInfo };
+
+                // Note, after instantiating this object, start won't be called until next frame. To prevent other objects from running
+                // into trouble trying to use a non-initialised floating component, the script execution of the spawner is set to be after
+                // everything else.
 
                 // Add as spawned by this spawner
                 Add(component);

@@ -1,26 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!50 &-6039558205717588424
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6630872142019274210}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!1001 &4947054697900400859
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32,6 +11,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Plank2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1775244112326313275, guid: 75d0d0c7d3e84b04b82bffdca814acd3,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 52cb939b209479e4eaefdec9bafacf73,
+        type: 3}
+    - target: {fileID: 1775244112326313275, guid: 75d0d0c7d3e84b04b82bffdca814acd3,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1775244112326313274, guid: 75d0d0c7d3e84b04b82bffdca814acd3,
         type: 3}
@@ -88,17 +78,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1775244112326313275, guid: 75d0d0c7d3e84b04b82bffdca814acd3,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 52cb939b209479e4eaefdec9bafacf73,
-        type: 3}
-    - target: {fileID: 1775244112326313275, guid: 75d0d0c7d3e84b04b82bffdca814acd3,
-        type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6677037099127308180, guid: 75d0d0c7d3e84b04b82bffdca814acd3,
         type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.y
@@ -116,9 +95,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 75d0d0c7d3e84b04b82bffdca814acd3, type: 3}
---- !u!1 &6630872142019274210 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1775244112326313273, guid: 75d0d0c7d3e84b04b82bffdca814acd3,
-    type: 3}
-  m_PrefabInstance: {fileID: 4947054697900400859}
-  m_PrefabAsset: {fileID: 0}

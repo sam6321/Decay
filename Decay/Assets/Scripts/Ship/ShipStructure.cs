@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class ShipStructure : MonoBehaviour
 {
+    class PlankInfo
+    {
+        public Plank plank;
+        public Vector2 position;
+    }
+
     [SerializeField]
     private Vector2 plankDimensions = new Vector2(0.6f, 2.06f);
 
@@ -24,9 +30,19 @@ public class ShipStructure : MonoBehaviour
     private Stern stern;
     public Stern Stern => stern;
 
+    /*[SerializeField]
+    private Weapon weapon;
+    public Weapon Weapon => weapon; */
+
     [SerializeField]
     private List<Plank> planks = new List<Plank>();
     public IReadOnlyList<Plank> Planks => planks;
+    public int Width => Mathf.CeilToInt(Mathf.Sqrt(planks.Count));
+    public int Height => Mathf.FloorToInt(Mathf.Sqrt(planks.Count) + 0.5f);
+
+    [SerializeField]
+    private List<Oar> oars = new List<Oar>();
+    public IReadOnlyList<Oar> Oars => oars;
 
     private Bounds bounds = new Bounds();
 
@@ -136,6 +152,32 @@ public class ShipStructure : MonoBehaviour
         return false;
     }
 
+    public bool AddOar(Oar oar)
+    {
+        if(!oars.Contains(oar) && oars.Count < Height * 2)
+        {
+            // TODO: Check if oar can be added based on planks count
+            OnAdd(oar.gameObject);
+            oars.Add(oar);
+            oar.transform.parent = transform;
+            RecalculateLayout();
+            return true;
+        }
+        return false;
+    }
+
+    public bool RemoveOar(Oar oar)
+    {
+        if(oars.Remove(oar))
+        {
+            oar.transform.parent = null;
+            RecalculateLayout();
+            OnRemove(oar.gameObject);
+            return true;
+        }
+        return false;
+    }
+
     public Vector2 ClosestPoint(Vector2 point)
     {
         Vector2 local = transform.InverseTransformPoint(point);
@@ -154,15 +196,13 @@ public class ShipStructure : MonoBehaviour
 
     private void RecalculateLayout()
     {
-        int width = Mathf.CeilToInt(Mathf.Sqrt(planks.Count));
-        int height = Mathf.FloorToInt(Mathf.Sqrt(planks.Count) + 0.5f);
+        int width = Width;
+        int height = Height;
 
-        float halfWidth = (Mathf.Max(0, width - 1)) / 2.0f;
-        float halfHeight = (Mathf.Max(0, height - 1)) / 2.0f;
-
-        RecalculatePlanks(width, height, halfWidth, halfHeight);
+        RecalculatePlanks(width, height);
         RecalculateBow(width, height);
         RecalculateStern(width, height);
+        RecalculateOars(width, height);
         bounds.extents = new Vector3(
             width * plankDimensions.x, 
             height * plankDimensions.y + 
@@ -172,7 +212,7 @@ public class ShipStructure : MonoBehaviour
         ) * 0.5f;
     }
 
-    private void RecalculatePlanks(int width, int height, float halfWidth, float halfHeight)
+    private void RecalculatePlanks(int width, int height)
     {
         int x = 0;
         int y = 0;
@@ -180,7 +220,7 @@ public class ShipStructure : MonoBehaviour
         int goal = 1;
         bool xDir = true;
 
-        foreach(Plank plank in planks)
+        foreach (Plank plank in planks)
         {
             plank.MoveTo(
                 new Vector2(x, y) * plankDimensions,
@@ -189,7 +229,7 @@ public class ShipStructure : MonoBehaviour
                 0.5f
             );
 
-            if(xDir)
+            if (xDir)
             {
                 if(x != goal)
                 {
@@ -251,6 +291,42 @@ public class ShipStructure : MonoBehaviour
                 0,
                 0.5f
             );
+        }
+    }
+
+    private void RecalculateOars(int width, int height)
+    {
+        if(oars.Count == 0)
+        {
+            return;
+        }
+
+        float xOffset = (width % 2 == 0 ? plankDimensions.x * 0.5f : 0.0f);
+        float yOffset = (height % 2 == 0 ? plankDimensions.y * 0.5f : 0.0f) + plankDimensions.y * 0.5f;
+        float halfWidth = width / 2.0f;
+        float halfHeight = height / 2.0f;
+
+        // Alternate oars on left and right side
+        int index = 0;
+        for (int y = 0; y < height; y++)
+        {
+            for(int i = -1; i <= 1; i += 2)
+            {
+                // This is an edge, take an oar and position it here
+                float xPosition = i * halfWidth * plankDimensions.x + xOffset;
+                float yPosition = halfHeight * plankDimensions.y - (yOffset + y * plankDimensions.y);
+                oars[index++].MoveTo(
+                    new Vector2(xPosition, yPosition),
+                    Vector2.one,
+                    i < 0 ? 45 : 135, // Left or right orientation
+                    0.5f
+                );
+
+                if (index == oars.Count)
+                {
+                    return; // Exhausted oars
+                }
+            }
         }
     }
 }

@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 4655113696639001919}
   - component: {fileID: 4655113696639001916}
   - component: {fileID: 4655113696639001913}
-  - component: {fileID: 7162363114660416487}
   - component: {fileID: -2757914058833903268}
+  - component: {fileID: 5611058413905207234}
   m_Layer: 8
   m_Name: ComponentBase
   m_TagString: Untagged
@@ -97,6 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupDistance: 200
   timeScale: 0.1
+  npcPriority: 0
 --- !u!114 &4655113696639001913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,21 +114,6 @@ MonoBehaviour:
   eraseRenderer: 0
   originalLayer: 0
   originalMaterials: []
---- !u!114 &7162363114660416487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4655113696639001917}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aac74ff3fe4271449b1cdee23e71cc0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  smoothing: 5
-  distance: 0.5
-  target: {fileID: 0}
 --- !u!331 &-2757914058833903268
 SpriteMask:
   m_ObjectHideFlags: 0
@@ -175,3 +161,24 @@ SpriteMask:
   m_BackSortingOrder: 0
   m_IsCustomRangeActive: 0
   m_SpriteSortPoint: 0
+--- !u!50 &5611058413905207234
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4655113696639001917}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
