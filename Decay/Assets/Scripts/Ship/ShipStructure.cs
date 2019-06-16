@@ -1,11 +1,18 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Common;
 
 public class ShipStructure : MonoBehaviour
 {
     [System.Serializable]
     public class OnLoseEvent : UnityEvent<ShipStructure> { }
+
+    [SerializeField]
+    private ColourGroup randomColours;
+
+    [SerializeField]
+    private Color32 colour = new Color32(255, 255, 255, 255);
 
     [SerializeField]
     private Vector2 plankDimensions = new Vector2(0.6f, 2.06f);
@@ -69,6 +76,11 @@ public class ShipStructure : MonoBehaviour
 
     private void Start()
     {
+        if(randomColours)
+        {
+            colour = randomColours.GetRandom();
+        }
+
         RecalculateLayout();
         PlanksHealth = healthPerPlank * planks.Count;
     }
@@ -124,13 +136,25 @@ public class ShipStructure : MonoBehaviour
 
     }
 
+    private void AddComponent(ShipComponent component)
+    {
+        component.Colour = colour;
+        component.transform.parent = transform;
+    }
+
+    private void RemoveComponent(ShipComponent component)
+    {
+        component.Colour = Color.white;
+        component.transform.parent = null;
+    }
+
     public bool AddPlank(Plank plank)
     {
         if(!planks.Contains(plank))
         {
             // TODO: Max planks check?
             planks.Add(plank);
-            plank.transform.parent = transform;
+            AddComponent(plank);
             PlanksHealth += healthPerPlank;
             RecalculateLayout();
             return true;
@@ -142,7 +166,7 @@ public class ShipStructure : MonoBehaviour
     {
         if(planks.Remove(plank))
         {
-            plank.transform.parent = null;
+            RemoveComponent(plank);
             RecalculateLayout();
             return true;
         }
@@ -182,7 +206,7 @@ public class ShipStructure : MonoBehaviour
             }
 
             this.stern = stern;
-            stern.transform.parent = transform;
+            AddComponent(stern);
             SternHealth = 100f;
             RecalculateLayout();
             return true;
@@ -194,7 +218,7 @@ public class ShipStructure : MonoBehaviour
     {
         if(this.stern == stern)
         {
-            this.stern.transform.parent = null;
+            RemoveComponent(stern);
             this.stern = null;
             RecalculateLayout();
             return true;
@@ -227,7 +251,7 @@ public class ShipStructure : MonoBehaviour
             }
 
             this.bow = bow;
-            bow.transform.parent = transform;
+            AddComponent(bow);
             BowHealth = 100f;
             RecalculateLayout();
             return true;
@@ -239,7 +263,7 @@ public class ShipStructure : MonoBehaviour
     {
         if(this.bow == bow)
         {
-            this.bow.transform.parent = null;
+            RemoveComponent(bow);
             this.bow = null;
             RecalculateLayout();
             return true;
@@ -266,7 +290,7 @@ public class ShipStructure : MonoBehaviour
         {
             // TODO: Check if oar can be added based on planks count
             oars.Add(oar);
-            oar.transform.parent = transform;
+            AddComponent(oar);
             RecalculateLayout();
             return true;
         }
@@ -277,7 +301,7 @@ public class ShipStructure : MonoBehaviour
     {
         if(oars.Remove(oar))
         {
-            oar.transform.parent = null;
+            RemoveComponent(oar);
             RecalculateLayout();
             return true;
         }
