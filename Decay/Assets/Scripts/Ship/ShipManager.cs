@@ -5,6 +5,12 @@ using UnityEngine;
 public class ShipManager : MonoBehaviour
 {
     [SerializeField]
+    private GameObject onWinUI;
+
+    [SerializeField]
+    private GameObject onLoseUI;
+
+    [SerializeField]
     private List<ShipStructure> ships = new List<ShipStructure>();
     public IReadOnlyList<ShipStructure> Ships => ships;
 
@@ -37,11 +43,13 @@ public class ShipManager : MonoBehaviour
 
     private void Win()
     {
-
+        player.GetComponent<PlayerMovement>().enabled = false;
+        player.enabled = false;
+        onWinUI.SetActive(true);
     }
 
     private void Lose()
     {
-
+        onLoseUI.SetActive(true);
     }
 }
