@@ -224,9 +224,12 @@ public class NPCAI : MonoBehaviour
         bestStructure = null;
         foreach(ShipStructure structure in shipManager.FindNearbyShips(shipStructure, boatCheckDistance))
         {
-            // TODO: Go after the weakest boat
-            bestStructure = structure;
-            break;
+            if(structure != shipStructure)
+            {
+                // TODO: Go after the weakest boat
+                bestStructure = structure;
+                break;
+            }
         }
         return bestStructure != null;
     }
