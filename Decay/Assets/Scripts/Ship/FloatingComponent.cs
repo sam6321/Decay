@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using cakeslice;
+using Common;
 
 public class FloatingComponent : MonoBehaviour
 {
@@ -14,8 +15,15 @@ public class FloatingComponent : MonoBehaviour
     private int npcPriority = 0; // NPCs prefer to go after higher priority items
     public int NPCPriority => npcPriority;
 
+    [SerializeField]
+    private AudioGroup attachSounds;
+
+    [SerializeField]
+    private AudioGroup detachSounds;
+
     public FloatingComponentSpawner.SpawnTag SpawnTag { get; set; }
 
+    private AudioSource audioSource;
     private ShipStructure player;
     private Outline outline;
     private Collider2D collider2d;
@@ -42,6 +50,7 @@ public class FloatingComponent : MonoBehaviour
         {
             this.player = player.GetComponent<ShipStructure>();
         }
+        audioSource = GetComponent<AudioSource>();
         collider2d = GetComponent<Collider2D>();
         rigidbody2D = GetComponent<Rigidbody2D>();
         outline = GetComponent<Outline>();
@@ -206,6 +215,8 @@ public class FloatingComponent : MonoBehaviour
                 SpawnTag.spawner.Remove(this);
             }
 
+            attachSounds.PlayRandomOneShot(audioSource);
+
             // Disable the FloatingComponent, as this has been attached to the ship
             // Set the layer to indicate we're now owned by the ship
             gameObject.layer = LayerMask.NameToLayer("ShipComponent");
@@ -214,9 +225,9 @@ public class FloatingComponent : MonoBehaviour
             enabled = false;
             outline.eraseRenderer = true;
             mouseOver = false;
-            mask.alphaCutoff = 0;
-            oldMaskInteraction = renderer.maskInteraction;
-            renderer.maskInteraction = SpriteMaskInteraction.None;
+            //mask.alphaCutoff = 0;
+            //oldMaskInteraction = renderer.maskInteraction;
+            //renderer.maskInteraction = SpriteMaskInteraction.None;
             
             return true;
         }
@@ -226,13 +237,21 @@ public class FloatingComponent : MonoBehaviour
 
     public bool TryReturnToSpawner()
     {
+        ShipStructure structure = shipComponent.AttachedStructure;
         if(!enabled && shipComponent.Detach())
         {
             gameObject.layer = LayerMask.NameToLayer("FloatingComponent");
             rigidbody2D = gameObject.AddComponent<Rigidbody2D>();
             rigidbody2D.gravityScale = 0;
+
+            // Pick a random direction away from structure and eject the component in that direction
+            Vector2 direction = transform.position - structure.transform.position;
+            rigidbody2D.AddForce(direction.normalized * 100);
+
+            detachSounds.PlayRandomOneShot(audioSource);
+
             enabled = true;
-            renderer.maskInteraction = oldMaskInteraction;
+            //renderer.maskInteraction = oldMaskInteraction;
 
             if (SpawnTag != null)
             {

@@ -4,6 +4,8 @@ using UnityEngine;
 public abstract class ShipComponent : MonoBehaviour
 {
     protected ShipStructure attachedStructure;
+    public ShipStructure AttachedStructure => attachedStructure;
+
     private Coroutine moveCoroutine;
 
     private FloatingComponent floatingComponent;
@@ -11,12 +13,21 @@ public abstract class ShipComponent : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
 
-    public Color Colour { get => spriteRenderer.color; set => spriteRenderer.color = value; }
-
     private void Start()
     {
         floatingComponent = GetComponent<FloatingComponent>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    public void SetOwnerColour(Color colour)
+    {
+        spriteRenderer.material.SetColor("_Colour", colour);
+        spriteRenderer.material.SetFloat("_Amount", 1.0f);
+    }
+
+    public void ClearOwnerColour()
+    {
+        spriteRenderer.material.SetFloat("_Amount", 0.0f);
     }
 
     public void MoveTo(Vector2 localTarget, Vector2 localScale, float rotation, float period)

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a01262d3ffde0644ba19b2f561abf9f7, type: 3}
+  m_Name: Detach Sounds
+  m_EditorClassIdentifier: 
+  assets:
+  - {fileID: 8300000, guid: 20e2ef988e5f8ae4ab8ea0ef7a9bec1f, type: 3}
+  - {fileID: 8300000, guid: 54d6f236670e736429f19219fd301350, type: 3}
+  - {fileID: 8300000, guid: cb26da59e99a1d6419dcaf0db2f980c2, type: 3}
