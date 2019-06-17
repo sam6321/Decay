@@ -32,6 +32,12 @@ public class NPCAI : MonoBehaviour
     [SerializeField]
     private float attackBackoffTimeout = 10.0f; // Don't attack again for 10 seconds after attacking
 
+    [SerializeField]
+    private int minPlanksToStartFight = 6;
+
+    [SerializeField]
+    private int minPlanksToContinueFight = 4;
+
     private FloatingComponentSpawner componentSpawner;
     private ShipManager shipManager;
 
@@ -80,7 +86,8 @@ public class NPCAI : MonoBehaviour
         }
 
         // Check for nearby weak enemies, if any are found, transition to attack
-        if(boatCheckCooldown.Check(Time.time) && 
+        if(shipStructure.Planks.Count > minPlanksToStartFight &&
+            boatCheckCooldown.Check(Time.time) && 
             (attackBackoffTime + attackBackoffTimeout <= Time.time) && // Don't attack again too soon, wait for the timeout first
             FindNearbyBoatTarget(out ShipStructure target))
         {
@@ -149,7 +156,7 @@ public class NPCAI : MonoBehaviour
         movement.MovementTarget = currentBoatTarget.transform.position;
 
         // If chasing enemy for too long, return to roam
-        if(attackStartTime + attackGiveUpTimeout <= Time.time)
+        if(shipStructure.Planks.Count < minPlanksToContinueFight || attackStartTime + attackGiveUpTimeout <= Time.time)
         {
             fsm.ChangeState(States.Roam);
         }
