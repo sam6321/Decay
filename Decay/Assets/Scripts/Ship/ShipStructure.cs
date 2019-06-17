@@ -12,7 +12,7 @@ public class ShipStructure : MonoBehaviour
     private ColourGroup randomColours;
 
     [SerializeField]
-    private Color32 colour = new Color32(255, 255, 255, 255);
+    private Color colour = new Color(1, 1, 1);
 
     [SerializeField]
     private Vector2 plankDimensions = new Vector2(0.6f, 2.06f);
@@ -106,6 +106,11 @@ public class ShipStructure : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if(!collision.rigidbody)
+        {
+            return;
+        }
+
         // Calculate the damage we should take on collision
         ShipStructure otherStructure = collision.rigidbody.GetComponent<ShipStructure>();
         if(!otherStructure)
@@ -138,13 +143,13 @@ public class ShipStructure : MonoBehaviour
 
     private void AddComponent(ShipComponent component)
     {
-        component.Colour = colour;
+        component.SetOwnerColour(colour);
         component.transform.parent = transform;
     }
 
     private void RemoveComponent(ShipComponent component)
     {
-        component.Colour = Color.white;
+        component.ClearOwnerColour();
         component.transform.parent = null;
     }
 
