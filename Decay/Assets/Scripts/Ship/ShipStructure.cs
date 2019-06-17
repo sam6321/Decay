@@ -106,6 +106,11 @@ public class ShipStructure : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if(!collision.rigidbody)
+        {
+            return;
+        }
+
         // Calculate the damage we should take on collision
         ShipStructure otherStructure = collision.rigidbody.GetComponent<ShipStructure>();
         if(!otherStructure)
