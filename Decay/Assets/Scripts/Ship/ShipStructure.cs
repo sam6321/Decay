@@ -107,7 +107,7 @@ public class ShipStructure : MonoBehaviour
 
         if(planks.Count > 0)
         {
-            float drain = planks.Count == 1 ? 1.0f : 5.0f;
+            float drain = planks.Count == 1 ? 0.0f : 5.0f;
             DamagePlanks(drain * Time.deltaTime);
         }
     }
