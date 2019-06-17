@@ -21,6 +21,9 @@ public class NPCAI : MonoBehaviour
     private float itemCheckDistance = 5.0f;
 
     [SerializeField]
+    private float attackItemCheckDistance = 0.2f;
+
+    [SerializeField]
     private Cooldown boatCheckCooldown = new Cooldown(1.0f);
 
     [SerializeField]
@@ -75,15 +78,7 @@ public class NPCAI : MonoBehaviour
             movement.MovementTarget = Random.insideUnitCircle * 40;
         }
 
-        // Check for nearby items, if any are found, transition to pick up
-        if(itemCheckCooldown.Check(Time.time) && 
-            FindNearbyFloatingComponent(out FloatingComponent floatingComponent))
-        {
-            // Found something!
-            Debug.Log("Going to try picking up " + floatingComponent.tag);
-            currentPickupTarget = floatingComponent;
-            fsm.ChangeState(States.PickUp);
-        }
+        CheckForPickup(itemCheckDistance);
 
         // Check for nearby weak enemies, if any are found, transition to attack
         if(shipStructure.Planks.Count > minPlanksToStartFight &&
@@ -102,6 +97,19 @@ public class NPCAI : MonoBehaviour
         movement.MovementTarget = null;
     }
 
+    void CheckForPickup(float maxDistance)
+    {
+        // Check for nearby items, if any are found, transition to pick up
+        if(itemCheckCooldown.Check(Time.time) && 
+            FindNearbyFloatingComponent(out FloatingComponent floatingComponent, maxDistance))
+        {
+            // Found something!
+            Debug.Log("Going to try picking up " + floatingComponent.tag);
+            currentPickupTarget = floatingComponent;
+            fsm.ChangeState(States.PickUp);
+        }
+    }
+
 
     // PickUp
 
@@ -118,7 +126,7 @@ public class NPCAI : MonoBehaviour
         if(!currentPickupTarget.SpawnTag.spawner)
         {
             // Someone else picked it up, so just return to roaming
-            fsm.ChangeState(States.Roam);
+            fsm.ChangeState(fsm.LastState);
             Debug.Log("Not trying to pick up " + currentPickupTarget.tag + ". Someone else got it");
         }
         else if(currentPickupTarget.CanPickup(shipStructure))
@@ -127,7 +135,7 @@ public class NPCAI : MonoBehaviour
             bool success = currentPickupTarget.TryAttachToShip(shipStructure);
             Debug.Log("Pickup " + currentPickupTarget.tag + " success " + success);
             // If the pick up doesn't work, then that's fine, just go back to roaming
-            fsm.ChangeState(States.Roam);
+            fsm.ChangeState(fsm.LastState);
         }
     }
 
@@ -154,6 +162,8 @@ public class NPCAI : MonoBehaviour
     {
         // TODO: On next impact with the target, cancel from the attack and return to roaming
         movement.MovementTarget = currentBoatTarget.transform.position;
+
+        CheckForPickup(attackItemCheckDistance);
 
         // If chasing enemy for too long, return to roam
         if(shipStructure.Planks.Count < minPlanksToContinueFight || attackStartTime + attackGiveUpTimeout <= Time.time)
@@ -186,11 +196,11 @@ public class NPCAI : MonoBehaviour
 
     }
 
-    bool FindNearbyFloatingComponent(out FloatingComponent bestComponent)
+    bool FindNearbyFloatingComponent(out FloatingComponent bestComponent, float maxDistance)
     {
         // TODO: don't go after a bow or stern if we don't have the planks for it
         bestComponent = null;
-        foreach (FloatingComponent component in componentSpawner.FindNearbySpawnedComponents(shipStructure, itemCheckDistance))
+        foreach (FloatingComponent component in componentSpawner.FindNearbySpawnedComponents(shipStructure, maxDistance))
         {
             if(component.CompareTag("Bow") && shipStructure.Bow)
             {
