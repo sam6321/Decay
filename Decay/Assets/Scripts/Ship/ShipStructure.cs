@@ -9,6 +9,12 @@ public class ShipStructure : MonoBehaviour
     public class OnLoseEvent : UnityEvent<ShipStructure> { }
 
     [SerializeField]
+    private GameObject onDestroyParticles;
+
+    [SerializeField]
+    private AudioGroup onDestroySounds;
+
+    [SerializeField]
     private ColourGroup randomColours;
 
     [SerializeField]
@@ -71,11 +77,13 @@ public class ShipStructure : MonoBehaviour
     private OnLoseEvent onLose = new OnLoseEvent();
     public OnLoseEvent OnLose => onLose;
 
+    private AudioSource audioSource;
     private Bounds bounds = new Bounds();
     private bool noRecalcLayout = false;
 
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         if(randomColours)
         {
             colour = randomColours.GetRandom();
@@ -194,8 +202,9 @@ public class ShipStructure : MonoBehaviour
             PlanksHealth = 0;
             Debug.Log("You lose");
             OnLose.Invoke(this);
+            onDestroySounds.PlayRandomOneShot(audioSource);
+            Instantiate(onDestroyParticles, transform.position, Quaternion.identity);
             Destroy(gameObject);
-            // TODO: proper lose
         }
     }
 

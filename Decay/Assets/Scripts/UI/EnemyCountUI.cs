@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class EnemyCountUI : MonoBehaviour
 {
     [SerializeField]
-    private Text enemiesRemainingText;
+    private Text shipsRemainingText;
 
     [SerializeField]
     private ShipManager shipManager;
@@ -15,7 +15,7 @@ public class EnemyCountUI : MonoBehaviour
     {
         if(shipManager.Ships.Count != lastCount)
         {
-            enemiesRemainingText.text = (shipManager.Ships.Count - 1).ToString();
+            shipsRemainingText.text = shipManager.Ships.Count.ToString();
             lastCount = shipManager.Ships.Count;
         }
     }

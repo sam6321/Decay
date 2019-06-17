@@ -8,9 +8,20 @@ public class ShipManager : MonoBehaviour
     private List<ShipStructure> ships = new List<ShipStructure>();
     public IReadOnlyList<ShipStructure> Ships => ships;
 
+    [SerializeField]
+    private ShipStructure player;
+
     public void RemoveShip(ShipStructure structure)
     {
         ships.Remove(structure);
+        if(structure == player)
+        {
+            Lose();
+        }
+        else if(ships.Count == 1)
+        {
+            Win();
+        }
     }
 
     public IEnumerable<ShipStructure> FindNearbyShips(ShipStructure structure, float distance)
@@ -22,5 +33,15 @@ public class ShipManager : MonoBehaviour
                 yield return ship;
             }
         }
+    }
+
+    private void Win()
+    {
+
+    }
+
+    private void Lose()
+    {
+
     }
 }
