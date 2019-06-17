@@ -149,13 +149,16 @@ public class NPCAI : MonoBehaviour
     // Attack
 
     private ShipStructure currentBoatTarget;
-    private float attackStartTime = 0;
+    private float? attackStartTime = 0;
     private float attackBackoffTime = 0;
 
     void Attack_Enter()
     {
         Debug.Log("Attack_Enter");
-        attackStartTime = Time.time;
+        if(attackStartTime == null)
+        {
+            attackStartTime = Time.time;
+        }
     }
 
     void Attack_Update()
@@ -168,6 +171,7 @@ public class NPCAI : MonoBehaviour
         // If chasing enemy for too long, return to roam
         if(shipStructure.Planks.Count < minPlanksToContinueFight || attackStartTime + attackGiveUpTimeout <= Time.time)
         {
+            attackStartTime = null;
             fsm.ChangeState(States.Roam);
         }
     }
