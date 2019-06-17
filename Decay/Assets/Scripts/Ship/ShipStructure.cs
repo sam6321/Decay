@@ -168,7 +168,7 @@ public class ShipStructure : MonoBehaviour
             // TODO: Max planks check?
             planks.Add(plank);
             AddComponent(plank);
-            PlanksHealth += healthPerPlank;
+            PlanksHealth = Mathf.Min(planks.Count * healthPerPlank, PlanksHealth + 1.25f * healthPerPlank);
             RecalculateLayout();
             return true;
         }
