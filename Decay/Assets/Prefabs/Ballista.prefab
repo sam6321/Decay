@@ -179,6 +179,11 @@ PrefabInstance:
       propertyPath: destroyOnDetach
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4655113696639001916, guid: 92c269ec14f49c74c9ae8a2757561382,
+        type: 3}
+      propertyPath: particlesOnDetach
+      value: 
+      objectReference: {fileID: 100002, guid: d39ab699aa314a147969fd483aa55205, type: 3}
     - target: {fileID: 4655113696639001912, guid: 92c269ec14f49c74c9ae8a2757561382,
         type: 3}
       propertyPath: m_Points.m_Paths.Array.size
