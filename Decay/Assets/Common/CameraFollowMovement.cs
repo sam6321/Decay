@@ -78,12 +78,17 @@ namespace Common
         {
             if (clampBounds.min.x != 0 || clampBounds.min.y != 0 || clampBounds.max.x != 0 || clampBounds.max.y != 0)
             {
-                return clampBounds.ClosestPoint(position);
+                float vertExtent = Camera.main.orthographicSize;  
+                float horzExtent = vertExtent * Screen.width / Screen.height;
+                float leftBound = clampBounds.min.x + horzExtent;
+                float rightBound = clampBounds.max.x - horzExtent;
+                float bottomBound = clampBounds.min.y + vertExtent;
+                float topBound = clampBounds.max.y - vertExtent;
+                position.x = Mathf.Clamp(position.x, leftBound, rightBound);
+                position.y = Mathf.Clamp(position.y, bottomBound, topBound);
             }
-            else
-            {
-                return position;
-            }
+
+            return position;
         }
 
         private void LateUpdate()
