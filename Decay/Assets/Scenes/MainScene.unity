@@ -2434,7 +2434,7 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: -10}
   clampBounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 75, y: 75, z: 0}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
