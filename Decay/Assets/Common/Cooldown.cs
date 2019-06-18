@@ -71,10 +71,19 @@ namespace Common
         {
             if (time >= Next)
             {
-                last = time;
+                Reset(time);
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Reset the cooldown to begin at the specified time
+        /// </summary>
+        /// <param name="time">The time to set to</param>
+        public void Reset(float time)
+        {
+            last = time;
         }
     }
 }

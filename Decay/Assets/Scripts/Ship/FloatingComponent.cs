@@ -16,6 +16,12 @@ public class FloatingComponent : MonoBehaviour
     public int NPCPriority => npcPriority;
 
     [SerializeField]
+    private bool destroyOnDetach = false;
+
+    [SerializeField]
+    private GameObject particlesOnDetach;
+
+    [SerializeField]
     private AudioGroup attachSounds;
 
     [SerializeField]
@@ -253,13 +259,18 @@ public class FloatingComponent : MonoBehaviour
             enabled = true;
             //renderer.maskInteraction = oldMaskInteraction;
 
-            if (SpawnTag != null)
+            if(particlesOnDetach)
+            {
+                Instantiate(particlesOnDetach, transform.position, Quaternion.identity);
+            }
+
+            if (SpawnTag != null && !destroyOnDetach)
             {
                 SpawnTag.spawner.Add(this);
             }
             else
             {
-                // Never owned by a spawner, so we're going to obliterate ourself here
+                // Was either not owned by a spawner, or we're set to destroy on detach
                 Destroy(gameObject);
             }
 

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -266,6 +266,40 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!84 &47135369
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  serializedVersion: 3
+  m_Width: 935
+  m_Height: 635
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 8
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &118430651
 GameObject:
   m_ObjectHideFlags: 0
@@ -301,7 +335,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 66.5, y: 0}
+  m_AnchoredPosition: {x: 67.5, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &118430653
@@ -495,7 +529,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 0
   m_RenderingPath: 1
-  m_TargetTexture: {fileID: 1719699652}
+  m_TargetTexture: {fileID: 1687100784}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -575,10 +609,10 @@ MonoBehaviour:
     spawnRate: 0.1
     spawned: []
     nextSpawn: 0
-  - maxSpawned: 3
+  - maxSpawned: 10
     prefabs:
     - {fileID: 2422054958220054651, guid: f0e4ee3bec8de784dac1676cc4e494c2, type: 3}
-    spawnRate: 20
+    spawnRate: 1
     spawned: []
     nextSpawn: 0
   - maxSpawned: 10
@@ -587,13 +621,13 @@ MonoBehaviour:
     spawnRate: 0.1
     spawned: []
     nextSpawn: 0
-  - maxSpawned: 1
+  - maxSpawned: 10
     prefabs:
     - {fileID: 7253471108629421557, guid: 37427f93b573ff74c9354b36e808414b, type: 3}
-    spawnRate: 30
+    spawnRate: 1
     spawned: []
     nextSpawn: 0
-  - maxSpawned: 1
+  - maxSpawned: 0
     prefabs:
     - {fileID: 6436027721658458298, guid: 78dd3220a5183e64cb7467d4934e1a02, type: 3}
     spawnRate: 30
@@ -623,6 +657,11 @@ MonoBehaviour:
   - {fileID: 1677316439}
   - {fileID: 543243511}
   player: {fileID: 1677316439}
+  onShipDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: ShipManager+OnShipDestroyEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!1001 &370901441
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -639,11 +678,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 1411620840979459254, guid: 3b762b396e5c0c040829ef97c8712f3b,
-        type: 3}
-      propertyPath: m_Simulated
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5983945218485328232, guid: 3b762b396e5c0c040829ef97c8712f3b,
         type: 3}
@@ -719,6 +753,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1411620840979459254, guid: 3b762b396e5c0c040829ef97c8712f3b,
+        type: 3}
+      propertyPath: m_Simulated
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5983945218485328233, guid: 3b762b396e5c0c040829ef97c8712f3b,
         type: 3}
@@ -976,6 +1015,7 @@ GameObject:
   - component: {fileID: 543243508}
   - component: {fileID: 543243507}
   - component: {fileID: 543243509}
+  - component: {fileID: 543243513}
   - component: {fileID: 543243511}
   - component: {fileID: 543243510}
   - component: {fileID: 543243512}
@@ -1091,6 +1131,7 @@ MonoBehaviour:
   minPlanksRequiredForStern: 4
   bow: {fileID: 0}
   stern: {fileID: 0}
+  weapon: {fileID: 0}
   healthPerPlank: 20
   bowMaxHealth: 100
   sternMaxHealth: 100
@@ -1208,40 +1249,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!84 &574777124
-RenderTexture:
+--- !u!114 &543243513
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 543243506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c89d3559c4af2e2479d95a629d5bd04b, type: 3}
   m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  serializedVersion: 3
-  m_Width: 994
-  m_Height: 558
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 8
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
+  m_EditorClassIdentifier: 
+  acquireTargetCooldown:
+    frequency: 5
+  loseTargetCooldown:
+    frequency: 1
+  maxAcquireDistance: 10
 --- !u!1 &588047337
 GameObject:
   m_ObjectHideFlags: 0
@@ -1563,14 +1587,14 @@ Light:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingLayerMask: 0
+  m_RenderingLayerMask: 461373440
   m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 3.1e-44, y: 6e-45, z: 3.9e-44, w: 1.1754945e-38}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -1662,11 +1686,6 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
-    - target: {fileID: 1411620840979459254, guid: 3b762b396e5c0c040829ef97c8712f3b,
-        type: 3}
-      propertyPath: m_BodyType
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5983945218485328232, guid: 3b762b396e5c0c040829ef97c8712f3b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1745,6 +1764,11 @@ PrefabInstance:
     - target: {fileID: 1657404621782590406, guid: 3b762b396e5c0c040829ef97c8712f3b,
         type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1411620840979459254, guid: 3b762b396e5c0c040829ef97c8712f3b,
+        type: 3}
+      propertyPath: m_BodyType
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5983945218485328233, guid: 3b762b396e5c0c040829ef97c8712f3b,
@@ -1833,7 +1857,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed21f4d03367a1a4b9bccf8a677dfddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shipsRemainingText: {fileID: 0}
+  shipsRemainingText: {fileID: 1628505005}
   shipManager: {fileID: 336542806}
 --- !u!114 &736986101
 MonoBehaviour:
@@ -2218,40 +2242,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 891996067}
   m_CullTransparentMesh: 0
---- !u!84 &913948222
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  serializedVersion: 3
-  m_Width: 935
-  m_Height: 635
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 8
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &928152635
 GameObject:
   m_ObjectHideFlags: 0
@@ -2463,8 +2453,8 @@ MonoBehaviour:
   sourceCamera: {fileID: 963194227}
   outlineCamera: {fileID: 319078400}
   outlineShaderMaterial: {fileID: 0}
-  renderTexture: {fileID: 913948222}
-  extraRenderTexture: {fileID: 1721492168}
+  renderTexture: {fileID: 1687100784}
+  extraRenderTexture: {fileID: 47135369}
 --- !u!1 &1055031636
 GameObject:
   m_ObjectHideFlags: 0
@@ -3146,7 +3136,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 127, y: 0}
+  m_AnchoredPosition: {x: 129, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1628505004
@@ -3217,6 +3207,7 @@ GameObject:
   - component: {fileID: 1677316433}
   - component: {fileID: 1677316432}
   - component: {fileID: 1677316439}
+  - component: {fileID: 1677316436}
   - component: {fileID: 1677316434}
   m_Layer: 0
   m_Name: Player
@@ -3369,6 +3360,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1677316436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1677316431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fcfb05f24ee95742a9292518f1f2712, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1677316439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3392,6 +3395,7 @@ MonoBehaviour:
   minPlanksRequiredForStern: 4
   bow: {fileID: 0}
   stern: {fileID: 0}
+  weapon: {fileID: 0}
   healthPerPlank: 20
   bowMaxHealth: 100
   sternMaxHealth: 100
@@ -3413,7 +3417,7 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: ShipStructure+OnLoseEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
---- !u!84 &1719699652
+--- !u!84 &1687100784
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3426,8 +3430,8 @@ RenderTexture:
   m_ForcedFallbackFormat: 4
   m_DownscaleFallback: 0
   serializedVersion: 3
-  m_Width: 994
-  m_Height: 558
+  m_Width: 935
+  m_Height: 635
   m_AntiAliasing: 1
   m_DepthFormat: 1
   m_ColorFormat: 8

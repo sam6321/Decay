@@ -43,6 +43,10 @@ public class ShipStructure : MonoBehaviour
     private Stern stern;
     public Stern Stern => stern;
 
+    [SerializeField]
+    private Weapon weapon;
+    public Weapon Weapon => weapon;
+
     public float BowHealth { get; set; } = 0;
     public float SternHealth { get; set; } = 0;
     public float PlanksHealth { get; set; } = 0;
@@ -78,13 +82,15 @@ public class ShipStructure : MonoBehaviour
     public OnLoseEvent OnLose => onLose;
 
     private AudioSource audioSource;
+    private Rigidbody2D rigidbody2D;
     private Bounds bounds = new Bounds();
     private bool noRecalcLayout = false;
 
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        if(randomColours)
+        rigidbody2D = GetComponent<Rigidbody2D>();
+        if (randomColours)
         {
             colour = randomColours.GetRandom();
         }
@@ -126,27 +132,13 @@ public class ShipStructure : MonoBehaviour
             return; // Not colliding with a ship
         }
 
-        // What are we applying damage to?
-        Collider2D otherCollider = collision.otherCollider;
-        if(otherCollider.CompareTag("Plank"))
+        // TODO: Calculate the amount of damage taken properly...
+        ApplyDamage(collision.otherCollider, new DamageInfo()
         {
-            Debug.Log("Plank damage");
-            DamagePlanks(10);
-        }
-        else if(otherCollider.CompareTag("Bow"))
-        {
-            Debug.Log("Bow damage");
-            DamageBow(10);
-        }
-        else if(otherCollider.CompareTag("Stern"))
-        {
-            Debug.Log("Stern damage");
-            DamageStern(10);
-        }
-
-        Vector2 direction = collision.otherRigidbody.position - collision.rigidbody.position;
-        collision.otherRigidbody.AddForce(direction.normalized * 100);
-
+            source = otherStructure,
+            amount = 10,
+            force = (collision.otherRigidbody.position - collision.rigidbody.position) * 100
+        });
     }
 
     private void AddComponent(ShipComponent component)
@@ -159,6 +151,33 @@ public class ShipStructure : MonoBehaviour
     {
         component.ClearOwnerColour();
         component.transform.parent = null;
+    }
+
+    public void ApplyDamage(Collider2D collider, DamageInfo info)
+    {
+        if(!collider.transform.IsChildOf(transform))
+        {
+            Debug.Log("Can't apply damage to object that we don't own");
+            return;
+        }
+
+        if (collider.CompareTag("Plank") || collider.CompareTag("Oar"))
+        {
+            Debug.Log("Plank damage");
+            DamagePlanks(info.amount);
+        }
+        else if (collider.CompareTag("Bow"))
+        {
+            Debug.Log("Bow damage");
+            DamageBow(info.amount);
+        }
+        else if (collider.CompareTag("Stern"))
+        {
+            Debug.Log("Stern damage");
+            DamageStern(info.amount);
+        }
+
+        rigidbody2D.AddForce(info.force.normalized * 100);
     }
 
     public bool AddPlank(Plank plank)
@@ -279,6 +298,11 @@ public class ShipStructure : MonoBehaviour
         {
             RemoveComponent(bow);
             this.bow = null;
+            if(weapon)
+            {
+                // Weapon comes off with the bow
+                weapon.FloatingComponent.TryReturnToSpawner();
+            }
             RecalculateLayout();
             return true;
         }
@@ -316,6 +340,31 @@ public class ShipStructure : MonoBehaviour
         if(oars.Remove(oar))
         {
             RemoveComponent(oar);
+            RecalculateLayout();
+            return true;
+        }
+        return false;
+    }
+
+    public bool AddWeapon(Weapon weapon)
+    {
+        if(!this.weapon && bow)
+        {
+            AddComponent(weapon);
+            this.weapon = weapon;
+            RecalculateLayout();
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool RemoveWeapon(Weapon weapon)
+    {
+        if(this.weapon == weapon)
+        {
+            RemoveComponent(weapon);
+            this.weapon = null;
             RecalculateLayout();
             return true;
         }
@@ -416,12 +465,14 @@ public class ShipStructure : MonoBehaviour
                 height -= 1;
             }
             float newScale = (width * plankDimensions.x) / bowDimensions.x;
-            bow.MoveTo(
-                new Vector2((width % 2 == 0) ? 0.5f * plankDimensions.x : 0.0f, (float)height / 2.0f * plankDimensions.y + bowDimensions.y * newScale * 0.5f),
-                new Vector2(newScale, newScale),
-                0,
-                0.5f
-            );
+            Vector2 bowPosition = new Vector2((width % 2 == 0) ? 0.5f * plankDimensions.x : 0.0f, (float)height / 2.0f * plankDimensions.y + bowDimensions.y * newScale * 0.5f);
+            Vector2 bowScale = new Vector2(newScale, newScale);
+            bow.MoveTo(bowPosition, bowScale, 0, 0.5f);
+
+            if(weapon)
+            {
+                weapon.MoveTo(bowPosition, bowScale, 0, 0.5f);
+            }
         }
     }
 
