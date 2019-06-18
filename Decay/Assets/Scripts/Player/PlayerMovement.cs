@@ -17,8 +17,8 @@ public class PlayerMovement : MonoBehaviour
     private float bowForce = 1.5f;
     private float oarForce = 1.05f;
     private float sternRotationMultiplier = 1.5f;
-    private float massMultiplier = 0.1f;
-    private float massBase = 1f;
+    private float massMultiplier = 0.05f;
+    private float massBase = 0.5f;
     private float angularDragMultiplier = 5f;
 
     void Start()
