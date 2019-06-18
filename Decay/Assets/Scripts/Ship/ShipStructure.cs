@@ -81,9 +81,12 @@ public class ShipStructure : MonoBehaviour
     private Bounds bounds = new Bounds();
     private bool noRecalcLayout = false;
 
+    Rigidbody2D rigidbody2D;
+
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        rigidbody2D = GetComponent<Rigidbody2D>();
         if(randomColours)
         {
             colour = randomColours.GetRandom();
@@ -112,6 +115,13 @@ public class ShipStructure : MonoBehaviour
         }
     }
 
+    private Vector2 lastVelocity;
+
+    void FixedUpdate()
+    {
+        lastVelocity = rigidbody2D.velocity;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(!collision.rigidbody)
@@ -126,25 +136,32 @@ public class ShipStructure : MonoBehaviour
             return; // Not colliding with a ship
         }
 
+        Vector2 direction = collision.otherRigidbody.position - collision.rigidbody.position;
+        float orthogonalSpeed = Vector2.Dot((lastVelocity + collision.relativeVelocity), direction);
+        if(orthogonalSpeed < 0)
+        {
+            orthogonalSpeed = 0;
+        }
+        float damageMultiplier = orthogonalSpeed * collision.rigidbody.mass;
+
         // What are we applying damage to?
         Collider2D otherCollider = collision.otherCollider;
         if(otherCollider.CompareTag("Plank"))
         {
             Debug.Log("Plank damage");
-            DamagePlanks(10);
+            DamagePlanks(damageMultiplier * 2);
         }
         else if(otherCollider.CompareTag("Bow"))
         {
             Debug.Log("Bow damage");
-            DamageBow(10);
+            DamageBow(damageMultiplier * 2);
         }
         else if(otherCollider.CompareTag("Stern"))
         {
             Debug.Log("Stern damage");
-            DamageStern(10);
+            DamageStern(damageMultiplier * 2);
         }
 
-        Vector2 direction = collision.otherRigidbody.position - collision.rigidbody.position;
         collision.otherRigidbody.AddForce(direction.normalized * 100);
 
     }
