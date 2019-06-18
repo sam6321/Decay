@@ -144,12 +144,14 @@ public class ShipStructure : MonoBehaviour
     private void AddComponent(ShipComponent component)
     {
         component.SetOwnerColour(colour);
+        component.GetComponent<SpriteRenderer>().sortingOrder = component is Oar ? 2 : 1;
         component.transform.parent = transform;
     }
 
     private void RemoveComponent(ShipComponent component)
     {
         component.ClearOwnerColour();
+        component.GetComponent<SpriteRenderer>().sortingOrder = 0;
         component.transform.parent = null;
     }
 
