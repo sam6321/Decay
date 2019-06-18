@@ -216,11 +216,6 @@ public class NPCAI : MonoBehaviour
                 continue;
             }
 
-            if(component.CompareTag("Oar") || component.CompareTag("Weapon"))
-            {
-                continue; // TODO: Implement oars and weapons
-            }
-
             if (!bestComponent)
             {
                 bestComponent = component;

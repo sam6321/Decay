@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ShipManager : MonoBehaviour
 {
+    [System.Serializable]
+    public class OnShipDestroyEvent : UnityEvent<ShipStructure, ShipManager> { }
+
     [SerializeField]
     private GameObject onWinUI;
 
@@ -17,10 +21,15 @@ public class ShipManager : MonoBehaviour
     [SerializeField]
     private ShipStructure player;
 
+    [SerializeField]
+    private OnShipDestroyEvent onShipDestroyed = new OnShipDestroyEvent();
+    public OnShipDestroyEvent OnShipDestroyed => onShipDestroyed;
+
     public void RemoveShip(ShipStructure structure)
     {
         ships.Remove(structure);
-        if(structure == player)
+        OnShipDestroyed.Invoke(structure, this);
+        if (structure == player)
         {
             Lose();
         }
@@ -34,11 +43,16 @@ public class ShipManager : MonoBehaviour
     {
         foreach(ShipStructure ship in ships)
         {
-            if(structure.DistanceTo(ship) <= distance)
+            if(ship != structure && structure.DistanceTo(ship) <= distance)
             {
                 yield return ship;
             }
         }
+    }
+
+    public bool Exists(ShipStructure structure)
+    {
+        return ships.Contains(structure);
     }
 
     private void Win()
