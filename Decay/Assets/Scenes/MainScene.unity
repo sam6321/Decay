@@ -2017,7 +2017,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transformTarget: {fileID: 1677316435}
-  smoothing: 1
+  smoothing: 10
   offset: {x: 0, y: 0, z: -10}
   clampBounds:
     m_Center: {x: 0, y: 0, z: 0}
