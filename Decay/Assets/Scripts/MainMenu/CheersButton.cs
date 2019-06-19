@@ -8,9 +8,9 @@ public class CheersButton : MenuButton
     [SerializeField]
     AudioClip mouseDownAudio;
 
-    void OnMouseDown()
+    void OnMouseUp()
     {
         audioSource.PlayOneShot(mouseDownAudio);
-        attributions.SetActive(!attributions.activeSelf);
+        attributions.SetActive(true);
     }
 }
