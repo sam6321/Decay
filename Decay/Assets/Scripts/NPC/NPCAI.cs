@@ -53,11 +53,26 @@ public class NPCAI : MonoBehaviour
         GameObject gameManager = GameObject.Find("GameManager");
         componentSpawner = gameManager.GetComponent<FloatingComponentSpawner>();
         shipManager = gameManager.GetComponent<ShipManager>();
+        shipManager.OnShipDestroyed.AddListener(OnShipDestroyed);
 
         movement = GetComponent<NPCMovement>();
         shipStructure = GetComponent<ShipStructure>();
         fsm = StateMachine<States>.Initialize(this);
         fsm.ChangeState(States.Roam);
+    }
+
+    void OnDestroy()
+    {
+        shipManager.OnShipDestroyed.RemoveListener(OnShipDestroyed);
+    }
+
+    void OnShipDestroyed(ShipStructure structure, ShipManager manager)
+    {
+        // Null out the target if it gets destroyed
+        if (currentBoatTarget == structure)
+        {
+            currentBoatTarget = null;
+        }
     }
 
     // Roam
@@ -67,7 +82,7 @@ public class NPCAI : MonoBehaviour
 
     void Roam_Enter()
     {
-        Debug.Log("Roam_Enter");
+
     }
 
     void Roam_Update()
@@ -93,7 +108,6 @@ public class NPCAI : MonoBehaviour
 
     void Roam_Exit()
     {
-        Debug.Log("Roam_Exit");
         movement.MovementTarget = null;
     }
 
@@ -104,7 +118,6 @@ public class NPCAI : MonoBehaviour
             FindNearbyFloatingComponent(out FloatingComponent floatingComponent, maxDistance))
         {
             // Found something!
-            Debug.Log("Going to try picking up " + floatingComponent.tag);
             currentPickupTarget = floatingComponent;
             fsm.ChangeState(States.PickUp);
         }
@@ -117,7 +130,6 @@ public class NPCAI : MonoBehaviour
     
     void PickUp_Enter()
     {
-        Debug.Log("PickUp_Enter");
         movement.MovementTarget = currentPickupTarget.transform.position;
     }
 
@@ -127,13 +139,11 @@ public class NPCAI : MonoBehaviour
         {
             // Someone else picked it up, so just return to roaming
             fsm.ChangeState(fsm.LastState);
-            Debug.Log("Not trying to pick up " + currentPickupTarget.tag + ". Someone else got it");
         }
         else if(currentPickupTarget.CanPickup(shipStructure))
         { 
             // Close enough to pick the item up!
             bool success = currentPickupTarget.TryAttachToShip(shipStructure);
-            Debug.Log("Pickup " + currentPickupTarget.tag + " success " + success);
             // If the pick up doesn't work, then that's fine, just go back to roaming
             fsm.ChangeState(fsm.LastState);
         }
@@ -141,7 +151,6 @@ public class NPCAI : MonoBehaviour
 
     void PickUp_Exit()
     {
-        Debug.Log("PickUp_Exit");
         currentPickupTarget = null;
         movement.MovementTarget = null;
     }
@@ -154,7 +163,6 @@ public class NPCAI : MonoBehaviour
 
     void Attack_Enter()
     {
-        Debug.Log("Attack_Enter");
         if(attackStartTime == null)
         {
             attackStartTime = Time.time;
@@ -163,7 +171,12 @@ public class NPCAI : MonoBehaviour
 
     void Attack_Update()
     {
-        // TODO: On next impact with the target, cancel from the attack and return to roaming
+        if(currentBoatTarget == null)
+        {
+            // Boat destroyed, go back to roaming
+            fsm.ChangeState(States.Roam);
+        }
+
         movement.MovementTarget = currentBoatTarget.transform.position;
 
         CheckForPickup(attackItemCheckDistance);
@@ -178,7 +191,6 @@ public class NPCAI : MonoBehaviour
 
     void Attack_Exit()
     {
-        Debug.Log("Attack_Exit");
         movement.MovementTarget = null;
         attackBackoffTime = Time.time;
     }
@@ -206,12 +218,22 @@ public class NPCAI : MonoBehaviour
         bestComponent = null;
         foreach (FloatingComponent component in componentSpawner.FindNearbySpawnedComponents(shipStructure, maxDistance))
         {
-            if(component.CompareTag("Bow") && shipStructure.Bow)
+            if(component.CompareTag("Bow") && !shipStructure.CanPickupBow)
             {
                 continue;
             }
 
-            if(component.CompareTag("Stern") && shipStructure.Stern)
+            if(component.CompareTag("Weapon") && !shipStructure.CanPickupWeapon)
+            {
+                continue;
+            }
+
+            if(component.CompareTag("Stern") && !shipStructure.CanPickupStern)
+            {
+                continue;
+            }
+
+            if(component.CompareTag("Oar") && !shipStructure.CanPickupOar)
             {
                 continue;
             }
@@ -233,11 +255,10 @@ public class NPCAI : MonoBehaviour
         bestStructure = null;
         foreach(ShipStructure structure in shipManager.FindNearbyShips(shipStructure, boatCheckDistance))
         {
-            if(structure != shipStructure)
+            // TODO: Go after the weakest boat
+            if(!bestStructure || bestStructure.Planks.Count <= structure.Planks.Count)
             {
-                // TODO: Go after the weakest boat
                 bestStructure = structure;
-                break;
             }
         }
         return bestStructure != null;

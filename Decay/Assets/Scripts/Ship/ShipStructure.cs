@@ -31,9 +31,11 @@ public class ShipStructure : MonoBehaviour
 
     [SerializeField]
     private uint minPlanksRequiredForBow = 4;
+    public uint MinPlanksRequiredForBow => minPlanksRequiredForBow;
 
     [SerializeField]
     private uint minPlanksRequiredForStern = 4;
+    public uint MinPlanksRequiredForStern => minPlanksRequiredForStern;
 
     [SerializeField]
     private Bow bow;
@@ -132,13 +134,13 @@ public class ShipStructure : MonoBehaviour
             return;
         }
 
-        // Calculate the damage we should take on collision
         ShipStructure otherStructure = collision.rigidbody.GetComponent<ShipStructure>();
         if(!otherStructure)
         {
             return; // Not colliding with a ship
         }
 
+        // Calculate the damage we should take on collision
         Vector2 direction = collision.otherRigidbody.position - collision.rigidbody.position;
         float orthogonalSpeed = Vector2.Dot((lastVelocity + collision.relativeVelocity), direction);
         if(orthogonalSpeed < 0)
@@ -173,7 +175,7 @@ public class ShipStructure : MonoBehaviour
     {
         if(!collider.transform.IsChildOf(transform))
         {
-            Debug.Log("Can't apply damage to object that we don't own");
+            Debug.LogError("Can't apply damage to object that we don't own");
             return;
         }
 
@@ -243,17 +245,12 @@ public class ShipStructure : MonoBehaviour
         }
     }
 
+    public bool CanPickupStern => !stern && planks.Count >= minPlanksRequiredForStern;
+
     public bool AddStern(Stern stern)
     {
-        if(!this.stern)
+        if(CanPickupStern)
         {
-            if(planks.Count < minPlanksRequiredForStern)
-            {
-                // Player hasn't met required planks
-                // TODO: popup text here maybe saying "can't grab this"
-                return false;
-            }
-
             this.stern = stern;
             AddComponent(stern);
             SternHealth = 100f;
@@ -288,17 +285,12 @@ public class ShipStructure : MonoBehaviour
         }
     }
 
+    public bool CanPickupBow => !bow && planks.Count >= minPlanksRequiredForBow;
+
     public bool AddBow(Bow bow)
     {
-        if(!this.bow)
+        if(CanPickupBow)
         {
-            if(planks.Count < minPlanksRequiredForBow)
-            {
-                // Player hasn't met required planks
-                // TODO: popup text here maybe saying "can't grab this"
-                return false;
-            }
-
             this.bow = bow;
             AddComponent(bow);
             BowHealth = 100f;
@@ -338,11 +330,12 @@ public class ShipStructure : MonoBehaviour
         }
     }
 
+    public bool CanPickupOar => oars.Count < Height * 2;
+
     public bool AddOar(Oar oar)
     {
-        if(!oars.Contains(oar) && oars.Count < Height * 2)
+        if(!oars.Contains(oar) && CanPickupOar)
         {
-            // TODO: Check if oar can be added based on planks count
             oars.Add(oar);
             AddComponent(oar);
             RecalculateLayout();
@@ -362,9 +355,11 @@ public class ShipStructure : MonoBehaviour
         return false;
     }
 
+    public bool CanPickupWeapon => !weapon && bow;
+
     public bool AddWeapon(Weapon weapon)
     {
-        if(!this.weapon && bow)
+        if(CanPickupWeapon)
         {
             AddComponent(weapon);
             this.weapon = weapon;
@@ -436,12 +431,7 @@ public class ShipStructure : MonoBehaviour
 
         foreach (Plank plank in planks)
         {
-            plank.MoveTo(
-                new Vector2(x, y) * plankDimensions,
-                Vector2.one,
-                0,
-                0.5f
-            );
+            plank.MoveTo(0.5f, localTarget: new Vector2(x, y) * plankDimensions, rotation: 0);
 
             if (xDir)
             {
@@ -483,11 +473,11 @@ public class ShipStructure : MonoBehaviour
             float newScale = (width * plankDimensions.x) / bowDimensions.x;
             Vector2 bowPosition = new Vector2((width % 2 == 0) ? 0.5f * plankDimensions.x : 0.0f, (float)height / 2.0f * plankDimensions.y + bowDimensions.y * newScale * 0.5f);
             Vector2 bowScale = new Vector2(newScale, newScale);
-            bow.MoveTo(bowPosition, bowScale, 0, 0.5f);
+            bow.MoveTo(0.5f, bowPosition, bowScale, 0);
 
             if(weapon)
             {
-                weapon.MoveTo(bowPosition, bowScale, 0, 0.5f);
+                weapon.MoveTo(0.5f, bowPosition, bowScale);
             }
         }
     }
@@ -501,12 +491,8 @@ public class ShipStructure : MonoBehaviour
             {
                 height += 1;
             }
-            stern.MoveTo(
-                new Vector2((width % 2 == 0) ? 0.5f * plankDimensions.x : 0.0f, (float)height / 2.0f * -plankDimensions.y - sternDimensions.y * newScale * 0.5f),
-                new Vector2(newScale, newScale),
-                0,
-                0.5f
-            );
+            Vector2 sternPosition = new Vector2((width % 2 == 0) ? 0.5f * plankDimensions.x : 0.0f, (float)height / 2.0f * -plankDimensions.y - sternDimensions.y * newScale * 0.5f);
+            stern.MoveTo(0.5f, sternPosition, new Vector2(newScale, newScale), 0);
         }
     }
 
@@ -532,10 +518,9 @@ public class ShipStructure : MonoBehaviour
                 float xPosition = i * halfWidth * plankDimensions.x + xOffset;
                 float yPosition = halfHeight * plankDimensions.y - (yOffset + y * plankDimensions.y);
                 oars[index++].MoveTo(
-                    new Vector2(xPosition, yPosition),
-                    Vector2.one,
-                    i < 0 ? 45 : 135, // Left or right orientation
-                    0.5f
+                    0.5f,
+                    localTarget: new Vector2(xPosition, yPosition),
+                    rotation: i < 0 ? 45 : 135 // Left or right orientation
                 );
 
                 if (index == oars.Count)

@@ -224,8 +224,6 @@ public class FloatingComponent : MonoBehaviour
             attachSounds.PlayRandomOneShot(audioSource);
 
             // Disable the FloatingComponent, as this has been attached to the ship
-            // Set the layer to indicate we're now owned by the ship
-            gameObject.layer = LayerMask.NameToLayer("ShipComponent");
             Destroy(rigidbody2D);
             rigidbody2D = null;
             enabled = false;
@@ -246,7 +244,6 @@ public class FloatingComponent : MonoBehaviour
         ShipStructure structure = shipComponent.AttachedStructure;
         if(!enabled && shipComponent.Detach())
         {
-            gameObject.layer = LayerMask.NameToLayer("FloatingComponent");
             rigidbody2D = gameObject.AddComponent<Rigidbody2D>();
             rigidbody2D.gravityScale = 0;
 

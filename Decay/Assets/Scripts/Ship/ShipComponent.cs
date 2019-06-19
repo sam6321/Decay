@@ -13,24 +13,48 @@ public abstract class ShipComponent : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
 
+    private Color? colour;
+
+    private bool movingOntoShip = false;
+
     private void Start()
     {
         floatingComponent = GetComponent<FloatingComponent>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (colour.HasValue)
+        {
+            spriteRenderer.material.SetColor("_Colour", colour.Value);
+            spriteRenderer.material.SetFloat("_Amount", 1.0f);
+        }
     }
 
     public void SetOwnerColour(Color colour)
     {
-        spriteRenderer.material.SetColor("_Colour", colour);
-        spriteRenderer.material.SetFloat("_Amount", 1.0f);
+        if(!spriteRenderer)
+        {
+            this.colour = colour;
+        }
+        else
+        {
+            spriteRenderer.material.SetColor("_Colour", colour);
+            spriteRenderer.material.SetFloat("_Amount", 1.0f);
+        }
     }
 
     public void ClearOwnerColour()
     {
-        spriteRenderer.material.SetFloat("_Amount", 0.0f);
+        if (!spriteRenderer)
+        {
+            colour = null;
+        }
+        else
+        {
+            spriteRenderer.material.SetFloat("_Amount", 0.0f);
+        }
     }
 
-    public void MoveTo(Vector2 localTarget, Vector2 localScale, float rotation, float period)
+    public void MoveTo(float period, Vector2? localTarget=null, Vector2? localScale=null, float? rotation=null)
     {
         if(moveCoroutine != null)
         {
@@ -39,12 +63,13 @@ public abstract class ShipComponent : MonoBehaviour
         moveCoroutine = StartCoroutine(MoveToCoroutine(localTarget, localScale, rotation, period));
     }
 
-    private IEnumerator MoveToCoroutine(Vector2 targetPosition, Vector2 targetScale, float targetRotationZ, float period)
+    private IEnumerator MoveToCoroutine(Vector2? targetPosition, Vector2? targetScale, float? targetRotationZ, float period)
     {
-        Vector2 startPosition = transform.localPosition;
-        Vector2 startScale = transform.localScale;
-        Quaternion startRotation = transform.localRotation;
-        Quaternion targetRotation = Quaternion.AngleAxis(targetRotationZ, Vector3.forward);
+        // Who doesn't love optionals?
+        Vector2? startPosition = targetPosition.HasValue ? transform.localPosition : (Vector2?)null;
+        Vector2? startScale = targetScale.HasValue ? transform.localScale : (Vector2?)null;
+        Quaternion? startRotation = targetRotationZ.HasValue ? transform.localRotation : (Quaternion?)null;
+        Quaternion? targetRotation = targetRotationZ.HasValue ? Quaternion.AngleAxis(targetRotationZ.Value, Vector3.forward) : (Quaternion?)null;
 
         float start = Time.time;
         float end = start + period;
@@ -53,12 +78,28 @@ public abstract class ShipComponent : MonoBehaviour
         {
             float t = Mathf.Min(Time.time, end);
             float f = Mathf.SmoothStep(0.0f, 1.0f, Mathf.InverseLerp(start, end, t));
-            transform.localPosition = Vector2.Lerp(startPosition, targetPosition, f);
-            transform.localScale = Vector2.Lerp(startScale, targetScale, f);
-            transform.localRotation = Quaternion.Slerp(startRotation, targetRotation, f);
+
+            if(targetPosition.HasValue)
+            {
+                transform.localPosition = Vector2.Lerp(startPosition.Value, targetPosition.Value, f);
+            }
+            
+            if(targetScale.HasValue)
+            {
+                transform.localScale = Vector2.Lerp(startScale.Value, targetScale.Value, f);
+            }
+
+            if(targetRotationZ.HasValue)
+            {
+                transform.localRotation = Quaternion.Slerp(startRotation.Value, targetRotation.Value, f);
+            }
+            
             yield return null; // Wait until next frame
         }
 
+        // Set here so that it does not collide with other ships 
+        // while moving into position
+        gameObject.layer = LayerMask.NameToLayer("ShipComponent");
         moveCoroutine = null;
     }
 
@@ -67,6 +108,7 @@ public abstract class ShipComponent : MonoBehaviour
         if(DoAttach(structure))
         {
             attachedStructure = structure;
+            movingOntoShip = true;
             return true;
         }
         return false;
@@ -81,7 +123,13 @@ public abstract class ShipComponent : MonoBehaviour
             return false;
         }
 
-        return DoDetach(attachedStructure);
+        if(DoDetach(attachedStructure))
+        {
+            // Successfully detached, so go back to the floating component layer here
+            gameObject.layer = LayerMask.NameToLayer("FloatingComponent");
+            return true;
+        }
+        return false;
     }
 
     protected abstract bool DoDetach(ShipStructure structure);

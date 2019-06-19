@@ -9,6 +9,12 @@ public class ShipManager : MonoBehaviour
     public class OnShipDestroyEvent : UnityEvent<ShipStructure, ShipManager> { }
 
     [SerializeField]
+    private GameObject npcPrefab;
+
+    [SerializeField]
+    private uint npcsToSpawn;
+
+    [SerializeField]
     private GameObject onWinUI;
 
     [SerializeField]
@@ -24,6 +30,19 @@ public class ShipManager : MonoBehaviour
     [SerializeField]
     private OnShipDestroyEvent onShipDestroyed = new OnShipDestroyEvent();
     public OnShipDestroyEvent OnShipDestroyed => onShipDestroyed;
+
+    private void Start()
+    {
+        for(uint i = 0; i < npcsToSpawn; i++)
+        {
+            Vector2 position = Random.insideUnitCircle * 40;
+            GameObject spawned = Instantiate(npcPrefab, position, Quaternion.identity);
+
+            ShipStructure structure = spawned.GetComponent<ShipStructure>();
+            structure.OnLose.AddListener(RemoveShip);
+            ships.Add(structure);
+        }
+    }
 
     public void RemoveShip(ShipStructure structure)
     {
