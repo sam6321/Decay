@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Common;
 
 public class ShipManager : MonoBehaviour
 {
@@ -13,6 +13,10 @@ public class ShipManager : MonoBehaviour
 
     [SerializeField]
     private uint npcsToSpawn;
+
+    [SerializeField]
+    private Bounds spawnVolume = new Bounds();
+    public Bounds SpawnVolume => spawnVolume;
 
     [SerializeField]
     private GameObject onWinUI;
@@ -35,7 +39,7 @@ public class ShipManager : MonoBehaviour
     {
         for(uint i = 0; i < npcsToSpawn; i++)
         {
-            Vector2 position = Random.insideUnitCircle * 40;
+            Vector2 position = RandomExtensions.RandomInsideBounds(spawnVolume);
             GameObject spawned = Instantiate(npcPrefab, position, Quaternion.identity);
 
             ShipStructure structure = spawned.GetComponent<ShipStructure>();

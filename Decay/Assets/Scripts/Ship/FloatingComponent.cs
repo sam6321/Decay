@@ -202,7 +202,6 @@ public class FloatingComponent : MonoBehaviour
     {
         Vector2 closestShipPoint = structure.ClosestPoint(transform.position);
         Vector2 closestComponentPoint = collider2d.ClosestPoint(closestShipPoint);
-        Debug.DrawLine(closestShipPoint, closestComponentPoint, Color.red, 1);
         return Vector2.Distance(closestShipPoint, closestComponentPoint);
     }
 

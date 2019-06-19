@@ -149,6 +149,8 @@ public class ShipStructure : MonoBehaviour
         }
         float damageMultiplier = orthogonalSpeed * collision.rigidbody.mass;
 
+        Debug.Log("Applying damage to " + collision.otherCollider + " on " + collision.otherCollider.gameObject.name);
+
         ApplyDamage(collision.otherCollider, new DamageInfo()
         {
             source = otherStructure,
@@ -175,23 +177,21 @@ public class ShipStructure : MonoBehaviour
     {
         if(!collider.transform.IsChildOf(transform))
         {
+            // TODO: There's a bug here that I need to fix...
             Debug.LogError("Can't apply damage to object that we don't own");
             return;
         }
 
         if (collider.CompareTag("Plank") || collider.CompareTag("Oar"))
         {
-            Debug.Log("Plank damage");
             DamagePlanks(info.amount);
         }
-        else if (collider.CompareTag("Bow"))
+        else if (collider.CompareTag("Bow") || collider.CompareTag("Weapon"))
         {
-            Debug.Log("Bow damage");
             DamageBow(info.amount);
         }
         else if (collider.CompareTag("Stern"))
         {
-            Debug.Log("Stern damage");
             DamageStern(info.amount);
         }
 
@@ -237,7 +237,6 @@ public class ShipStructure : MonoBehaviour
         if (PlanksHealth <= 0)
         {
             PlanksHealth = 0;
-            Debug.Log("You lose");
             OnLose.Invoke(this);
             onDestroySounds.PlayRandomOneShot(audioSource);
             Instantiate(onDestroyParticles, transform.position, Quaternion.identity);
@@ -309,7 +308,10 @@ public class ShipStructure : MonoBehaviour
             if(weapon)
             {
                 // Weapon comes off with the bow
-                weapon.FloatingComponent.TryReturnToSpawner();
+                if(!weapon.FloatingComponent.TryReturnToSpawner())
+                {
+                    Debug.LogError("Should not happen");
+                }
             }
             RecalculateLayout();
             return true;
@@ -394,7 +396,6 @@ public class ShipStructure : MonoBehaviour
     {
         Vector2 closestOtherPoint = structure.ClosestPoint(transform.position);
         Vector2 closestPoint = ClosestPoint(closestOtherPoint);
-        Debug.DrawLine(closestOtherPoint, closestPoint, Color.red, 1);
         return Vector2.Distance(closestOtherPoint, closestPoint);
     }
 

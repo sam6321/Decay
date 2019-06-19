@@ -11,6 +11,7 @@ TagManager:
   - Rudder
   - Stern
   - NPC
+  - Projectile
   layers:
   - Default
   - TransparentFX

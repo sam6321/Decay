@@ -15,8 +15,6 @@ public abstract class ShipComponent : MonoBehaviour
 
     private Color? colour;
 
-    private bool movingOntoShip = false;
-
     private void Start()
     {
         floatingComponent = GetComponent<FloatingComponent>();
@@ -108,7 +106,6 @@ public abstract class ShipComponent : MonoBehaviour
         if(DoAttach(structure))
         {
             attachedStructure = structure;
-            movingOntoShip = true;
             return true;
         }
         return false;
@@ -125,6 +122,11 @@ public abstract class ShipComponent : MonoBehaviour
 
         if(DoDetach(attachedStructure))
         {
+            if(moveCoroutine != null)
+            {
+                StopCoroutine(moveCoroutine);
+                moveCoroutine = null;
+            }
             // Successfully detached, so go back to the floating component layer here
             gameObject.layer = LayerMask.NameToLayer("FloatingComponent");
             return true;
