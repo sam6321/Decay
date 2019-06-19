@@ -26,6 +26,9 @@ public class FloatingComponentSpawner : MonoBehaviour
     }
 
     [SerializeField]
+    private Bounds spawnBounds = new Bounds();
+
+    [SerializeField]
     private SpawnInfo[] spawnInfos;
 
     void LateUpdate()
@@ -36,7 +39,8 @@ public class FloatingComponentSpawner : MonoBehaviour
             {
                 GameObject prefab = RandomExtensions.RandomElement(spawnInfo.prefabs);
                 // TODO: Set position properly so it doesn't spawn inside the camera's view
-                GameObject instance = Instantiate(prefab, UnityEngine.Random.insideUnitCircle * 40, Quaternion.identity);
+                Vector2 position = RandomExtensions.RandomInsideBounds(spawnBounds);
+                GameObject instance = Instantiate(prefab, position, Quaternion.identity);
                 FloatingComponent component = instance.GetComponent<FloatingComponent>();
                 component.SpawnTag = new SpawnTag() { spawnInfo = spawnInfo, spawner = this };
 

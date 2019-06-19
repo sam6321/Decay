@@ -80,5 +80,19 @@ namespace Common
                 return null;
             }
         }
+
+        /// <summary>
+        /// Get a random point inside the bounds
+        /// </summary>
+        /// <param name="bounds">Bounds to get a point inside of</param>
+        /// <returns>Random point inside of the bounds</returns>
+        public static Vector3 RandomInsideBounds(Bounds bounds)
+        {
+            Vector3 vector = bounds.extents;
+            vector.x *= UnityEngine.Random.Range(-1f, 1f);
+            vector.y *= UnityEngine.Random.Range(-1f, 1f);
+            vector.z *= UnityEngine.Random.Range(-1f, 1f);
+            return vector + bounds.center;
+        }
     }
 }

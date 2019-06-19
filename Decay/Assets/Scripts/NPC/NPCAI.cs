@@ -90,7 +90,16 @@ public class NPCAI : MonoBehaviour
         // Pick random target to roam to, if no current target.
         if (!movement.MovementTarget.HasValue)
         {
-            movement.MovementTarget = Random.insideUnitCircle * 40;
+            movement.MovementTarget = RandomExtensions.RandomInsideBounds(shipManager.SpawnVolume);
+            if (shipManager.Ships.Count < 3)
+            {
+                // Move toward the player when there's only a few boats left
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                if(player)
+                {
+                    movement.MovementTarget = (Vector2)player.transform.position + Random.insideUnitCircle * 5;
+                }
+            }
         }
 
         CheckForPickup(itemCheckDistance);
