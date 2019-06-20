@@ -29,6 +29,8 @@ namespace Common
         [SerializeField]
         private float smoothing = 5.0f;
 
+        public float Smoothing { get => smoothing; set => smoothing = value; }
+
         /// <summary>
         /// Final position offset that the camera's destination will be from the target
         /// </summary>

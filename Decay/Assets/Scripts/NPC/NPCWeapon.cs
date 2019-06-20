@@ -5,10 +5,10 @@ using Common;
 public class NPCWeapon : MonoBehaviour
 {
     [SerializeField]
-    private Cooldown acquireTargetCooldown = new Cooldown(5);
+    private FixedCooldown acquireTargetCooldown = new FixedCooldown(1f);
 
     [SerializeField]
-    private Cooldown loseTargetCooldown = new Cooldown(1);
+    private FixedCooldown loseTargetCooldown = new FixedCooldown(1f);
 
     [SerializeField]
     private float maxAcquireDistance = 10;

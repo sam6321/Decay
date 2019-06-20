@@ -15,10 +15,19 @@ public class ShipStructure : MonoBehaviour
     private AudioGroup onDestroySounds;
 
     [SerializeField]
+    private GameObject onDestroySoundPrefab;
+
+    [SerializeField]
+    private AudioGroup onDamagedSounds;
+
+    [SerializeField]
     private ColourGroup randomColours;
 
     [SerializeField]
     private Color colour = new Color(1, 1, 1);
+
+    [SerializeField]
+    private Scoring scoring = null;
 
     [SerializeField]
     private Vector2 plankDimensions = new Vector2(0.6f, 2.06f);
@@ -116,7 +125,7 @@ public class ShipStructure : MonoBehaviour
         if(planks.Count > 0)
         {
             float drain = planks.Count == 1 ? 0.0f : 5.0f;
-            DamagePlanks(drain * Time.deltaTime);
+            DamagePlanks(drain * Time.deltaTime, null);
         }
     }
 
@@ -148,8 +157,6 @@ public class ShipStructure : MonoBehaviour
             orthogonalSpeed = 0;
         }
         float damageMultiplier = orthogonalSpeed * collision.rigidbody.mass;
-
-        Debug.Log("Applying damage to " + collision.otherCollider + " on " + collision.otherCollider.gameObject.name);
 
         ApplyDamage(collision.otherCollider, new DamageInfo()
         {
@@ -184,7 +191,7 @@ public class ShipStructure : MonoBehaviour
 
         if (collider.CompareTag("Plank") || collider.CompareTag("Oar"))
         {
-            DamagePlanks(info.amount);
+            DamagePlanks(info.amount, info.source);
         }
         else if (collider.CompareTag("Bow") || collider.CompareTag("Weapon"))
         {
@@ -195,6 +202,13 @@ public class ShipStructure : MonoBehaviour
             DamageStern(info.amount);
         }
 
+        if(scoring)
+        {
+            scoring.DamageTaken += (uint)info.amount;
+        }
+
+        onDamagedSounds.PlayRandomOneShot(audioSource);
+
         rigidbody2D.AddForce(info.force.normalized * 100);
     }
 
@@ -202,11 +216,14 @@ public class ShipStructure : MonoBehaviour
     {
         if(!planks.Contains(plank))
         {
-            // TODO: Max planks check?
             planks.Add(plank);
             AddComponent(plank);
             PlanksHealth = Mathf.Min(planks.Count * healthPerPlank, PlanksHealth + 1.25f * healthPerPlank);
             RecalculateLayout();
+            if (scoring)
+            {
+                scoring.PlanksPickedUp++;
+            }
             return true;
         }
         return false;
@@ -218,12 +235,16 @@ public class ShipStructure : MonoBehaviour
         {
             RemoveComponent(plank);
             RecalculateLayout();
+            if (scoring)
+            {
+                scoring.PlanksLost++;
+            }
             return true;
         }
         return false;
     }
 
-    public void DamagePlanks(float amount)
+    public void DamagePlanks(float amount, ShipStructure attacker)
     {
         PlanksHealth -= amount; 
         while (PlanksHealth < (healthPerPlank * (planks.Count - 1)) && Planks.Count > 0)
@@ -238,8 +259,13 @@ public class ShipStructure : MonoBehaviour
         {
             PlanksHealth = 0;
             OnLose.Invoke(this);
-            onDestroySounds.PlayRandomOneShot(audioSource);
+            onDestroySounds.PlayRandomOneShot(Instantiate(onDestroySoundPrefab, transform.position, Quaternion.identity).GetComponent<AudioSource>());
             Instantiate(onDestroyParticles, transform.position, Quaternion.identity);
+
+            if(attacker.CompareTag("Player"))
+            {
+                GameObject.Find("GameManager").GetComponent<Scoring>().ShipsSunk++;
+            }
             Destroy(gameObject);
         }
     }

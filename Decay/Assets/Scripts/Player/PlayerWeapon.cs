@@ -2,6 +2,9 @@
 
 public class PlayerWeapon : MonoBehaviour
 {
+    [SerializeField]
+    private Scoring scoring;
+
     private ShipStructure structure;
 
     // Start is called before the first frame update
@@ -19,7 +22,10 @@ public class PlayerWeapon : MonoBehaviour
 
             if(Input.GetMouseButtonDown(1))
             {
-                structure.Weapon.Fire();
+                if(structure.Weapon.Fire())
+                {
+                    scoring.ArrowsFired++;
+                }
             }
         }
     }

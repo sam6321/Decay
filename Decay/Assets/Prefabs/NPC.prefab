@@ -50,16 +50,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemCheckCooldown:
-    frequency: 1
+    range:
+      start: 0.2
+      end: 2
   itemCheckDistance: 10
   attackItemCheckDistance: 0.2
   boatCheckCooldown:
     frequency: 1
   boatCheckDistance: 1000
   attackGiveUpTimeout: 15
+  attackCheckForItemsTime: 5
   attackBackoffTimeout: 10
   minPlanksToStartFight: 6
   minPlanksToContinueFight: 4
+  minShipsRemainingBeforeAggressionBoost: 5
 --- !u!114 &5649851310141582796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,7 +79,7 @@ MonoBehaviour:
   forwardMovementForce: 200
   horizontalForwardMovementForce: 100
   rotationTorqueMultiplier: 360
-  distanceSlowdownThreshold: 5
+  distanceSlowdownThreshold: 1
   targetArrivedDistance: 1
   maxAngleDifference: 10
   onArrive:
@@ -114,6 +118,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onDestroyParticles: {fileID: 100002, guid: d39ab699aa314a147969fd483aa55205, type: 3}
   onDestroySounds: {fileID: 11400000, guid: 39cdd1dd0dc8997469093a3c05efe594, type: 2}
+  onDestroySoundPrefab: {fileID: 5171739382556646347, guid: 5a0db73ba075fcb4a898d0eaf602fe2b,
+    type: 3}
+  onDamagedSounds: {fileID: 11400000, guid: dc9594ab070f43e40952d2e69b328b02, type: 2}
   randomColours: {fileID: 11400000, guid: 2e3fd480c01c65e4c92ad71fff800d6f, type: 2}
   colour: {r: 1, g: 1, b: 1, a: 1}
   plankDimensions: {x: 0.6, y: 2.06}

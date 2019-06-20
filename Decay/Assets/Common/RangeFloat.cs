@@ -50,6 +50,15 @@ namespace Common
         {
             return Mathf.InverseLerp(start, end, factor);
         }
+
+        /// <summary>
+        /// Get a random value between the range values
+        /// </summary>
+        /// <returns>The random value</returns>
+        public float Random()
+        {
+            return UnityEngine.Random.Range(start, end);
+        }
     }
 }
 

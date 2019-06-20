@@ -16,7 +16,7 @@ public class Weapon : ShipComponent
     private Vector2 shootOffset = new Vector2(0, 0);
 
     [SerializeField]
-    private Cooldown fireCooldown = new Cooldown(0.5f);
+    private FixedCooldown fireCooldown = new FixedCooldown(0.5f);
 
     private Vector2 aimDirection = new Vector2();
 

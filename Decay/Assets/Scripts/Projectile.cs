@@ -18,20 +18,22 @@ public class Projectile : MonoBehaviour
     {
         // Calculate the damage we should take on collision
         ShipStructure structure = collider.GetComponentInParent<ShipStructure>();
-        if (!structure || structure == source)
+        if(structure)
         {
-            return; // Not colliding with a ship, or colliding with owner
+            if(structure == source)
+            {
+                return;
+            }
+
+            structure.ApplyDamage(collider, new DamageInfo()
+            {
+                source = source,
+                amount = damage,
+                force = (collider.transform.position - transform.position).normalized * 100
+            });
         }
 
-        structure.ApplyDamage(collider, new DamageInfo()
-        {
-            source = source,
-            amount = damage,
-            force = (collider.transform.position - transform.position).normalized * 100
-        });
-
         Instantiate(onImpactParticles, transform.position, Quaternion.identity);
-
         Destroy(gameObject);
     }
 }

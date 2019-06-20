@@ -23,7 +23,7 @@ TagManager:
   - 
   - FloatingComponent
   - ShipComponent
-  - 
+  - Projectile
   - 
   - 
   - 
@@ -48,4 +48,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Weapon
+    uniqueID: 4256396939
     locked: 0

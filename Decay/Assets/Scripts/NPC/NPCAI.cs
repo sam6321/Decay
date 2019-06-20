@@ -10,12 +10,11 @@ public class NPCAI : MonoBehaviour
     {
         Roam,
         PickUp,
-        Attack,
-        Flee
+        Attack
     }
 
     [SerializeField]
-    private Cooldown itemCheckCooldown = new Cooldown(1.0f);
+    private RangeCooldown itemCheckCooldown = new RangeCooldown(0.2f, 2.0f);
 
     [SerializeField]
     private float itemCheckDistance = 5.0f;
@@ -24,22 +23,28 @@ public class NPCAI : MonoBehaviour
     private float attackItemCheckDistance = 0.2f;
 
     [SerializeField]
-    private Cooldown boatCheckCooldown = new Cooldown(1.0f);
+    private FixedCooldown boatCheckCooldown = new FixedCooldown(1.0f);
 
     [SerializeField]
     private float boatCheckDistance = 5.0f;
 
     [SerializeField]
-    private float attackGiveUpTimeout = 15.0f;
+    private float attackGiveUpTimeout = 10.0f;
 
     [SerializeField]
-    private float attackBackoffTimeout = 10.0f; // Don't attack again for 10 seconds after attacking
+    private float attackCheckForItemsTime = 5.0f; // After 5 seconds of trying to attack, begin checking for items too
+
+    [SerializeField]
+    private float attackBackoffTimeout = 5.0f; // Don't attack again for 5 seconds after attacking
 
     [SerializeField]
     private int minPlanksToStartFight = 6;
 
     [SerializeField]
     private int minPlanksToContinueFight = 4;
+
+    [SerializeField]
+    private int minShipsRemainingBeforeAggressionBoost = 5;
 
     private FloatingComponentSpawner componentSpawner;
     private ShipManager shipManager;
@@ -91,18 +96,21 @@ public class NPCAI : MonoBehaviour
         if (!movement.MovementTarget.HasValue)
         {
             movement.MovementTarget = RandomExtensions.RandomInsideBounds(shipManager.SpawnVolume);
-            if (shipManager.Ships.Count < 3)
+            if (shipManager.Ships.Count < minShipsRemainingBeforeAggressionBoost)
             {
                 // Move toward the player when there's only a few boats left
                 GameObject player = GameObject.FindGameObjectWithTag("Player");
                 if(player)
                 {
-                    movement.MovementTarget = (Vector2)player.transform.position + Random.insideUnitCircle * 5;
+                    movement.MovementTarget = (Vector2)player.transform.position + Random.insideUnitCircle * 1;
                 }
             }
         }
 
-        CheckForPickup(itemCheckDistance);
+        if(shipManager.Ships.Count >= minShipsRemainingBeforeAggressionBoost)
+        {
+            CheckForPickup(itemCheckDistance);
+        }
 
         // Check for nearby weak enemies, if any are found, transition to attack
         if(shipStructure.Planks.Count > minPlanksToStartFight &&
@@ -131,7 +139,6 @@ public class NPCAI : MonoBehaviour
             fsm.ChangeState(States.PickUp);
         }
     }
-
 
     // PickUp
 
@@ -184,14 +191,19 @@ public class NPCAI : MonoBehaviour
         {
             // Boat destroyed, go back to roaming
             fsm.ChangeState(States.Roam);
+            return;
         }
 
         movement.MovementTarget = currentBoatTarget.transform.position;
 
-        CheckForPickup(attackItemCheckDistance);
+        if(attackStartTime + attackCheckForItemsTime <= Time.time)
+        {
+            CheckForPickup(attackItemCheckDistance);
+        }
 
         // If chasing enemy for too long, return to roam
-        if(shipStructure.Planks.Count < minPlanksToContinueFight || attackStartTime + attackGiveUpTimeout <= Time.time)
+        if(shipStructure.Planks.Count < minPlanksToContinueFight || 
+            attackStartTime + attackGiveUpTimeout <= Time.time)
         {
             attackStartTime = null;
             fsm.ChangeState(States.Roam);
@@ -202,23 +214,6 @@ public class NPCAI : MonoBehaviour
     {
         movement.MovementTarget = null;
         attackBackoffTime = Time.time;
-    }
-
-    // Flee
-
-    void Flee_Enter()
-    {
-
-    }
-
-    void Flee_Update()
-    {
-
-    }
-
-    void Flee_Exit()
-    {
-
     }
 
     bool FindNearbyFloatingComponent(out FloatingComponent bestComponent, float maxDistance)
