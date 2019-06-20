@@ -206,6 +206,10 @@ public class ShipStructure : MonoBehaviour
         {
             scoring.DamageTaken += (uint)info.amount;
         }
+        if (info.source && info.source.CompareTag("Player"))
+        {
+            GameObject.Find("GameManager").GetComponent<Scoring>().DamageDealt += (uint)info.amount;
+        }
 
         onDamagedSounds.PlayRandomOneShot(audioSource);
 
