@@ -9,6 +9,9 @@ public class ShipStructure : MonoBehaviour
     public class OnLoseEvent : UnityEvent<ShipStructure> { }
 
     [SerializeField]
+    private GameObject popupText;
+
+    [SerializeField]
     private GameObject onDestroyParticles;
 
     [SerializeField]
@@ -189,6 +192,15 @@ public class ShipStructure : MonoBehaviour
             return;
         }
 
+        if (scoring)
+        {
+            scoring.DamageTaken += (uint)info.amount;
+        }
+        if (info.source && info.source.CompareTag("Player"))
+        {
+            GameObject.Find("GameManager").GetComponent<Scoring>().DamageDealt += (uint)info.amount;
+        }
+
         if (collider.CompareTag("Plank") || collider.CompareTag("Oar"))
         {
             DamagePlanks(info.amount, info.source);
@@ -202,15 +214,6 @@ public class ShipStructure : MonoBehaviour
             DamageStern(info.amount);
         }
 
-        if(scoring)
-        {
-            scoring.DamageTaken += (uint)info.amount;
-        }
-        if (info.source && info.source.CompareTag("Player"))
-        {
-            GameObject.Find("GameManager").GetComponent<Scoring>().DamageDealt += (uint)info.amount;
-        }
-
         onDamagedSounds.PlayRandomOneShot(audioSource);
 
         rigidbody2D.AddForce(info.force.normalized * 100);
@@ -220,14 +223,15 @@ public class ShipStructure : MonoBehaviour
     {
         if(!planks.Contains(plank))
         {
-            planks.Add(plank);
-            AddComponent(plank);
-            PlanksHealth = Mathf.Min(planks.Count * healthPerPlank, PlanksHealth + 1.25f * healthPerPlank);
-            RecalculateLayout();
             if (scoring)
             {
                 scoring.PlanksPickedUp++;
             }
+
+            planks.Add(plank);
+            AddComponent(plank);
+            PlanksHealth = Mathf.Min(planks.Count * healthPerPlank, PlanksHealth + 1.25f * healthPerPlank);
+            RecalculateLayout();
             return true;
         }
         return false;
@@ -261,15 +265,15 @@ public class ShipStructure : MonoBehaviour
 
         if (PlanksHealth <= 0)
         {
+            if (attacker.CompareTag("Player"))
+            {
+                GameObject.Find("GameManager").GetComponent<Scoring>().ShipsSunk++;
+            }
+
             PlanksHealth = 0;
             OnLose.Invoke(this);
             onDestroySounds.PlayRandomOneShot(Instantiate(onDestroySoundPrefab, transform.position, Quaternion.identity).GetComponent<AudioSource>());
             Instantiate(onDestroyParticles, transform.position, Quaternion.identity);
-
-            if(attacker.CompareTag("Player"))
-            {
-                GameObject.Find("GameManager").GetComponent<Scoring>().ShipsSunk++;
-            }
             Destroy(gameObject);
         }
     }
@@ -286,6 +290,12 @@ public class ShipStructure : MonoBehaviour
             RecalculateLayout();
             return true;
         }
+
+        if(planks.Count < minPlanksRequiredForStern)
+        {
+            PopupText("Need " + minPlanksRequiredForStern + " planks!", stern.transform.position);
+        }
+
         return false;
     }
 
@@ -325,6 +335,11 @@ public class ShipStructure : MonoBehaviour
             BowHealth = 100f;
             RecalculateLayout();
             return true;
+        }
+
+        if(planks.Count < minPlanksRequiredForBow)
+        {
+            PopupText("Need " + minPlanksRequiredForBow + " planks!", bow.transform.position);
         }
         return false;
     }
@@ -373,6 +388,11 @@ public class ShipStructure : MonoBehaviour
             RecalculateLayout();
             return true;
         }
+
+        if(oars.Count >= Height * 2)
+        {
+            PopupText("Need more planks!", oar.transform.position);
+        }
         return false;
     }
 
@@ -393,10 +413,16 @@ public class ShipStructure : MonoBehaviour
     {
         if(CanPickupWeapon)
         {
+            PopupText("Right click to fire!", transform.position);
             AddComponent(weapon);
             this.weapon = weapon;
             RecalculateLayout();
             return true;
+        }
+
+        if (planks.Count < minPlanksRequiredForBow)
+        {
+            PopupText("Need bow first!", weapon.transform.position);
         }
 
         return false;
@@ -427,6 +453,19 @@ public class ShipStructure : MonoBehaviour
         Vector2 closestOtherPoint = structure.ClosestPoint(transform.position);
         Vector2 closestPoint = ClosestPoint(closestOtherPoint);
         return Vector2.Distance(closestOtherPoint, closestPoint);
+    }
+
+    private void PopupText(string text, Vector2 position)
+    {
+        if(!popupText)
+        {
+            return;
+        }
+
+        GameObject t = Instantiate(popupText, GameObject.Find("Canvas").transform);
+        t.transform.position = Camera.main.WorldToScreenPoint(position);
+        ScoreText st = t.GetComponent<ScoreText>();
+        st.Text = text;
     }
 
     private void RecalculateLayout()
