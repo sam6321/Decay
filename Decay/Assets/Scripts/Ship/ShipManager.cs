@@ -12,9 +12,6 @@ public class ShipManager : MonoBehaviour
     private GameObject npcPrefab;
 
     [SerializeField]
-    private uint npcsToSpawn;
-
-    [SerializeField]
     private Bounds spawnVolume = new Bounds();
     public Bounds SpawnVolume => spawnVolume;
 
@@ -37,7 +34,7 @@ public class ShipManager : MonoBehaviour
 
     private void Start()
     {
-        for(uint i = 0; i < npcsToSpawn; i++)
+        for(uint i = 0; i < SetShipCount.ShipCount; i++)
         {
             Vector2 position = RandomExtensions.RandomInsideBounds(spawnVolume);
             GameObject spawned = Instantiate(npcPrefab, position, Quaternion.identity);

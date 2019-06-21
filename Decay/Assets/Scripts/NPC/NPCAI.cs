@@ -107,15 +107,13 @@ public class NPCAI : MonoBehaviour
             }
         }
 
-        if(shipManager.Ships.Count >= minShipsRemainingBeforeAggressionBoost)
-        {
-            CheckForPickup(itemCheckDistance);
-        }
+        CheckForPickup(itemCheckDistance);
 
         // Check for nearby weak enemies, if any are found, transition to attack
-        if(shipStructure.Planks.Count > minPlanksToStartFight &&
+        bool aggressionBoost = shipManager.Ships.Count < minShipsRemainingBeforeAggressionBoost;
+        if ((shipStructure.Planks.Count > minPlanksToStartFight || aggressionBoost) &&
             boatCheckCooldown.Check(Time.time) && 
-            (attackBackoffTime + attackBackoffTimeout <= Time.time) && // Don't attack again too soon, wait for the timeout first
+            (attackBackoffTime + attackBackoffTimeout <= Time.time || aggressionBoost) && // Don't attack again too soon, wait for the timeout first
             FindNearbyBoatTarget(out ShipStructure target))
         {
             currentBoatTarget = target;
